@@ -37,8 +37,11 @@ test_avl: test_avl.c avl.c avl.h
 	gcc $(CFLAGS) -o $@ test_avl.c avl.c
 
 clean:
-	rm -f *.o *~ test_abr tests
+	rm -f *.o *~ test_abr tests *.pdf
 
 .PHONY: run-tests
 run-tests: tests
 	./$<
+
+rapport.pdf: rapport.md
+	pandoc $< -o $@
