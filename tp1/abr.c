@@ -8,7 +8,6 @@
 
 #define max(a,b) ((a)>(b)?(a):(b))
 
-
 int feuille (Arbre_t a)
 {
   if (a == NULL)
@@ -134,11 +133,23 @@ int hauteur_arbre_r (Arbre_t a)
 
 int hauteur_arbre_nr (Arbre_t a)
 {
-  /*
-    a completer
-  */
-  
-  return 0 ;
+    ppile_t pile = creer_pile();
+    ppile_t hauteurs = creer_pile();
+    empiler(pile, a);
+    empiler(hauteurs, (Arbre_t)1);
+    ssize_t h = 0;
+    while (!pile_vide(pile)) {
+        pnoeud_t n = depiler(pile);
+        ssize_t prof = (ssize_t)depiler(hauteurs);
+        if (n != NULL) {
+            h = max(h, prof);
+            empiler(pile, n->fgauche);
+            empiler(pile, n->fdroite);
+            empiler(hauteurs, (Arbre_t)(h + 1));
+            empiler(hauteurs, (Arbre_t)(h + 1));
+        }
+    }
+    return (int)h;
 }
 
 
@@ -211,76 +222,115 @@ void imprimer_liste_cle_triee_nr (Arbre_t a)
   return ;
 }
 
+int est_feuille(Arbre_t a) {
+    return a != NULL && a->fgauche == NULL && a->fdroite == NULL;
+}
 
 int arbre_plein (Arbre_t a)
 {
-  /*
-    a completer
-  */
-  
-  return 0 ;
+    if (a == NULL) return 0;
+    if (est_feuille(a)) return 1;
+    if (a->fgauche == NULL || a->fdroite == NULL) return 0;
+    return arbre_plein(a->fgauche) && arbre_plein(a->fdroite);
 }
 
 int arbre_parfait (Arbre_t a)
 {
-  /*
-    a completer
-  */
-  
-  return 0 ;
+    if (a == NULL) return 0;
+    if (est_feuille(a)) return 1;
+    if (a->fgauche == NULL || a->fdroite == NULL) return 0;
+    return hauteur_arbre_r(a->fgauche) == hauteur_arbre_r(a->fdroite)
+        && arbre_parfait(a->fgauche) && arbre_parfait(a->fdroite);
 }
-
-
-
 
 Arbre_t rechercher_cle_sup_arbre (Arbre_t a, int valeur)
 {
-  /*
-    a completer
-  */
-
-  return NULL ;
-  
+    if (a == NULL) return NULL;
+    if (a->cle > valeur) {
+        Arbre_t autre = rechercher_cle_sup_arbre(a->fdroite, valeur);
+        if (a->cle > autre->cle) {
+            return a;
+        } else {
+            return autre;
+        }
+    } else {
+        return NULL;
+    }
 }
 
 Arbre_t rechercher_cle_inf_arbre (Arbre_t a, int valeur)
 {
-  /*
-    a completer
-  */
-
-  return NULL ;
-  
+    if (a == NULL) return NULL;
+    if (a->cle < valeur) {
+        Arbre_t autre = rechercher_cle_inf_arbre(a->fgauche, valeur);
+        if (a->cle < autre->cle) {
+            return a;
+        } else {
+            return autre;
+        }
+    } else {
+        return NULL;
+    }
 }
 
 
 Arbre_t detruire_cle_arbre (Arbre_t a, int cle)
 {
-  /*
-    a completer
-  */
+    if (a == NULL) {
+        return NULL;
+    }
 
-  return NULL ;
+    Arbre_t g = detruire_cle_arbre(a->fgauche, cle);
+    Arbre_t d = detruire_cle_arbre(a->fdroite, cle);
+    if (a->cle == cle) {
+        ajouter_noeud(g, d);
+        return g;
+    } else {
+        Arbre_t resultat = malloc(sizeof(noeud_t));
+        resultat->cle = a->cle;
+        resultat->fgauche = g;
+        resultat->fdroite = d;
+        return resultat;
+    }
 }
 
 
 
 Arbre_t intersection_deux_arbres (Arbre_t a1, Arbre_t a2)
 {
-  /*
-    a completer
-  */
-
-  return NULL ;
-  
+    Arbre_t inter = malloc(sizeof(noeud_t));
+    if (rechercher_cle_arbre(a1, a2->cle)) {
+        inter->cle = a2->cle;
+    } else {
+        free(inter);
+        inter = NULL;
+    }
+    Arbre_t g = intersection_deux_arbres(a1->fgauche, a2->fgauche);
+    Arbre_t d = intersection_deux_arbres(a1->fdroite, a2->fdroite);
+    if (inter != NULL) {
+        ajouter_noeud(inter, g);
+        ajouter_noeud(inter, d);
+        return inter;
+    } else {
+        ajouter_noeud(g, d);
+        return g;
+    }
 }
 
 Arbre_t union_deux_arbres (Arbre_t a1, Arbre_t a2)
 {
-  /*
-    a completer
-  */
-
-  return NULL ;
+    if (a1 == NULL) {
+        return a2;
+    }
+    if (a2 == NULL) {
+        return a1;
+    }
+    Arbre_t uni = malloc(sizeof(noeud_t));
+    uni->cle = a1->cle;
+    ajouter_cle(uni, a2->cle);
+    Arbre_t g = union_deux_arbres(a1->fgauche, a2->fgauche);
+    Arbre_t d = union_deux_arbres(a1->fdroite, a2->fdroite);
+    ajouter_noeud(uni, g);
+    ajouter_noeud(uni, d);
+    return uni;
 }
-
