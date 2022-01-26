@@ -125,11 +125,11 @@ void afficher_arbre (Arbre_t a, int niveau)
 
 int hauteur_arbre_r (Arbre_t a)
 {
-  /*
-    a completer
-  */
-  
-  return 0 ;
+  if (a == NULL)
+    return 0;
+  else {
+    return max(hauteur_arbre_r(a->fgauche), hauteur_arbre_r(a->fdroite));
+  }
 }
 
 int hauteur_arbre_nr (Arbre_t a)
@@ -144,71 +144,192 @@ int hauteur_arbre_nr (Arbre_t a)
 
 void parcourir_arbre_largeur (Arbre_t a)
 {
-  /*
-    a completer
-    Utiliser une file, voir cours
-  */
+  pfile_t file = creer_file();
+  if (a != NULL) enfiler(file, a);
 
-  return ;
+  while (!file_vide(file)) {
+    Arbre_t current = defiler(file);
+    printf("Noeud %d\n", current->cle);
+    if (current->fgauche) enfiler(file, current->fgauche);
+    if (current->fdroite) enfiler(file, current->fdroite);
+  }
 }
+
+
+/**
+ * Renvoie un arbre de la même forme dont les noeuds sont etiquetés par leur niveau
+ */
+static Arbre_t niveaux(Arbre_t a, int depth) {
+  if (a == NULL) return NULL;
+
+  Arbre_t n = malloc(sizeof(noeud_t));
+  n->cle = depth;
+  n->fgauche = niveaux(a->fgauche, depth + 1);
+  n->fdroite = niveaux(a->fdroite, depth + 1);
+  return n;
+}
+
 
 void afficher_nombre_noeuds_par_niveau (Arbre_t a)
 {
-  /*
-    a completer
-  */
+  Arbre_t n = niveaux(a, 0);
 
-  return ;
+  int current_level = 0;
+  int current_level_count = 0;
+
+  pfile_t file = creer_file();
+  
+  for (enfiler(file, n); !file_vide(file);) {
+    Arbre_t current = defiler(file);
+    if (current != NULL) {
+      if (current->cle == current_level) current_level_count++;
+      else {
+        printf("Niveau %d: %d noeuds\n", current_level, current_level_count);
+        current_level = current->cle;
+        current_level_count = 1;
+      }
+
+      enfiler(file, current->fgauche);
+      enfiler(file, current->fdroite);
+      free(current);
+    }
+  }
+
+  printf("Niveau %d (dernier): %d noeuds\n", current_level, current_level_count);
 }
 
 
 int nombre_cles_arbre_r (Arbre_t a)
 {
-  /*
-    a completer
-  */
-  
-  return 0 ;
+  if (a == NULL) return 0;
+  else return 1
+    + nombre_cles_arbre_r(a->fgauche)
+    + nombre_cles_arbre_r(a->fdroite);
 }
 
 int nombre_cles_arbre_nr (Arbre_t a)
 {
-  /*
-    a completer
-  */
+  pfile_t file = creer_file();
+  int cles = 0;
   
-  return 0 ;
+  for (enfiler(file, a); !file_vide(file);) {
+    Arbre_t current = defiler(file);
+    if (current != NULL) {
+      cles++;
+      enfiler(file, current->fgauche);
+      enfiler(file, current->fdroite);
+    }
+  }
+  
+  return cles;
 }
+
+
+int min(int a, int b) {
+  return a<b ? a : b;
+}
+
 
 int trouver_cle_min (Arbre_t a)
 {
-  /*
-    a completer
-  */
+  if (a == NULL) {
+    fprintf(stderr, "Panic: trouver_cle_min sur un arbre vide, pas de solution\n");
+    exit(1);
+  }
 
-  return 0 ; 
+  int e = a->cle;
+  Arbre_t g = a->fgauche;
+  Arbre_t d = a->fdroite;
+
+  if (g && d) {
+    return min(min(g->cle, d->cle), e);
+  } else if (g) {
+    return min(e, g->cle);
+  } else if (d) {
+    return min(e, d->cle);
+  } else {
+    return e;
+  }
 }
 
- 
+
+/**
+ * Fonction très peu performante pour insérer dans une pile en la gardant triée dans
+ * l'ordre décroissant. Utilise la pile d'exécution comme seconde pile.
+ */
+void insertion_pile_triee_rec(ppile_t pile, Arbre_t a) {
+  if (pile_vide(pile)) {
+    empiler(pile, a);
+  } else {
+    Arbre_t sommet = depiler(pile);
+
+    if (sommet->cle >= a->cle) {
+      empiler(pile, sommet);
+      empiler(pile, a);
+    } else {
+      insertion_pile_triee(pile, a);
+      empiler(pile, sommet);
+    }
+  }
+}
+
+
+void imprimer_liste_cle_triee_r_rec(Arbre_t a, ppile_t pile_triee) {
+  if (a == NULL) return;
+  insertion_pile_triee_rec(pile_triee, a);
+
+  imprimer_liste_cle_triee_r_rec(a->fgauche, pile_triee);
+  imprimer_liste_cle_triee_r_rec(a->fdroite, pile_triee);
+}
+
 
 void imprimer_liste_cle_triee_r (Arbre_t a)
 {
-  /*
-    a completer
-  */
-
-  
-  return ;
+  ppile_t pile_triee = creer_pile();
+  imprimer_liste_cle_triee_r_rec(a, pile_triee);
+  imprimer_pile(pile_triee);
 }
+
+
+void insertion_pile_triee(ppile_t pile1, Arbre_t a) {
+  ppile_t pile2 = creer_pile();
+
+  while (!pile_vide(pile1)) {
+    Arbre_t sommet = depiler(pile1);
+
+    if (sommet->cle < a->cle) {
+      empiler(pile2, sommet);
+    } else {
+      empiler(pile1, sommet);
+      break;
+    }
+  }
+
+  empiler(pile1, a);
+
+  while (!pile_vide(pile2)) {
+    empiler(pile1, depiler(pile2));
+  }
+}
+
 
 void imprimer_liste_cle_triee_nr (Arbre_t a)
 {
-  /*
-    a completer
-  */
+  ppile_t pile_triee = creer_pile();
 
+  pfile_t file = creer_file();
+  int cles = 0;
   
-  return ;
+  for (enfiler(file, a); !file_vide(file);) {
+    Arbre_t current = defiler(file);
+    if (current != NULL) {
+      insertion_pile_triee(current, pile_triee);
+      enfiler(file, current->fgauche);
+      enfiler(file, current->fdroite);
+    }
+  }
+
+  imprimer_pile(pile_triee);
 }
 
 

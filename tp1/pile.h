@@ -18,3 +18,5 @@ int pile_pleine (ppile_t p) ;
 pnoeud_t depiler (ppile_t p)  ;
 
 int empiler (ppile_t p, pnoeud_t pn) ;
+
+void imprimer_pile(ppile_t p);
