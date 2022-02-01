@@ -9,6 +9,20 @@ pile.o: pile.h pile.c
 file.o: file.h file.c
 	gcc -Wall -c file.c
 
+tests.o: tests.cc file.h pile.h abr.h
+	gcc $(CFLAGS) -Wall -c -o $@ $<
+
+LIBGTEST=/usr/lib/libgtest.a
+
+tests: tests.o file.o pile.o abr.o $(LIBGTEST)
+	gcc $(CFLAGS) -Wall -o $@ $^ -L/usr/lib -lstdc++ -lgtest -lgtest_main -pthread
+
+$(LIBGTEST):
+	@echo "libgtest n'est pas installé"
+	@echo "sur Ubuntu, suivez ces instructions:"
+	@echo "https://rationalcity.wordpress.com/2018/07/18/how-to-install-gtest-on-ubuntu/"
+	@false
+
 test_abr.o: test_abr.c abr.h
 	gcc -Wall -c test_abr.c
 
@@ -16,6 +30,8 @@ test_abr: test_abr.o pile.o file.o abr.o
 	gcc -o test_abr abr.o pile.o file.o test_abr.o
 
 clean:
-	rm -f *.o *~ test_abr
+	rm -f *.o *~ test_abr tests
 
-
+.PHONY: run-tests
+run-tests: tests
+	./$<

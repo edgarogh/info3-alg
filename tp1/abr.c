@@ -237,57 +237,21 @@ int trouver_cle_min (Arbre_t a)
     exit(1);
   }
 
-  int e = a->cle;
-  Arbre_t g = a->fgauche;
-  Arbre_t d = a->fdroite;
-
-  if (g && d) {
-    return min(min(g->cle, d->cle), e);
-  } else if (g) {
-    return min(e, g->cle);
-  } else if (d) {
-    return min(e, d->cle);
+  if (a->fgauche == NULL) {
+    return a->cle;
   } else {
-    return e;
+    return trouver_cle_min(a->fgauche);
   }
-}
-
-
-/**
- * Fonction très peu performante pour insérer dans une pile en la gardant triée dans
- * l'ordre décroissant. Utilise la pile d'exécution comme seconde pile.
- */
-void insertion_pile_triee_rec(ppile_t pile, Arbre_t a) {
-  if (pile_vide(pile)) {
-    empiler(pile, a);
-  } else {
-    Arbre_t sommet = depiler(pile);
-
-    if (sommet->cle >= a->cle) {
-      empiler(pile, sommet);
-      empiler(pile, a);
-    } else {
-      insertion_pile_triee(pile, a);
-      empiler(pile, sommet);
-    }
-  }
-}
-
-
-void imprimer_liste_cle_triee_r_rec(Arbre_t a, ppile_t pile_triee) {
-  if (a == NULL) return;
-  insertion_pile_triee_rec(pile_triee, a);
-
-  imprimer_liste_cle_triee_r_rec(a->fgauche, pile_triee);
-  imprimer_liste_cle_triee_r_rec(a->fdroite, pile_triee);
 }
 
 
 void imprimer_liste_cle_triee_r (Arbre_t a)
 {
-  ppile_t pile_triee = creer_pile();
-  imprimer_liste_cle_triee_r_rec(a, pile_triee);
-  imprimer_pile(pile_triee);
+  if (a == NULL) return;
+  
+  imprimer_liste_cle_triee_r(a->fgauche);
+  printf("%d;", a->cle);
+  imprimer_liste_cle_triee_r(a->fdroite);
 }
 
 
@@ -318,12 +282,11 @@ void imprimer_liste_cle_triee_nr (Arbre_t a)
   ppile_t pile_triee = creer_pile();
 
   pfile_t file = creer_file();
-  int cles = 0;
   
   for (enfiler(file, a); !file_vide(file);) {
     Arbre_t current = defiler(file);
     if (current != NULL) {
-      insertion_pile_triee(current, pile_triee);
+      insertion_pile_triee(pile_triee, current);
       enfiler(file, current->fgauche);
       enfiler(file, current->fdroite);
     }
