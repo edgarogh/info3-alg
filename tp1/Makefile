@@ -11,12 +11,6 @@ pile.o: pile.h pile.c
 file.o: file.h file.c abr.h
 	gcc $(CFLAGS) -Wall -c file.c
 
-test_file.o: test_file.c file.h abr.h
-	gcc $(CFLAGS) -Wall -c test_file.c
-
-test_file: test_file.o file.o file.h abr.h
-	gcc $(CFLAGS) -o test_file test_file.o file.o
-
 tests.o: tests.cc file.h pile.h abr.h
 	gcc $(CFLAGS) -Wall -c -o $@ $<
 
