@@ -38,7 +38,7 @@ test_abr: test_abr.o pile.o file.o abr.o
 	gcc $(CFLAGS) -o test_abr abr.o pile.o file.o test_abr.o
 
 clean:
-	rm -f *.o *~ test_abr test_file tests
+	rm -f *.o *~ test_abr tests
 
 .PHONY: run-tests
 run-tests: tests

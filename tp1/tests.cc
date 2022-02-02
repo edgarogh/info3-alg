@@ -65,13 +65,41 @@ TEST(pile, imprimer_pile) {
 
 TEST(file, file_vide_file_pleine) {
     pfile_t file = creer_file();
-    FAIL(); // TODO
+    ASSERT_TRUE(file_vide(file));
+
+    for (int i = 0; i < MAX_FILE_SIZE; i++) {
+        pnoeud_t n = (pnoeud_t) malloc(sizeof(noeud_t));
+        n->cle = i;
+        enfiler(file, n);
+    }
+
+    ASSERT_TRUE(file_pleine(file));
+    for (int i = 0; i < MAX_FILE_SIZE; i++) {
+        pnoeud_t n = defiler(file);
+        if (i < 31)
+            assert(n->cle == i);
+        else
+            assert (n == NULL);
+    }
+
+    ASSERT_TRUE(file_vide(file));
+
     detruire_file(file);
 }
 
 TEST(file, defiler_enfiler) {
     pfile_t file = creer_file();
-    FAIL(); // TODO
+
+    for (int i = 0; i < MAX_FILE_SIZE; i++) {
+        pnoeud_t n = (pnoeud_t) malloc(sizeof(noeud_t));
+        n->cle = i;
+        enfiler(file, n);
+        pnoeud_t x = defiler(file);
+        assert(x == n);
+    }
+
+    ASSERT_EQ(defiler(file), nullptr);
+
     detruire_file(file);
 }
 
