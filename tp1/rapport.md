@@ -7,6 +7,32 @@ author: Mattéo DECORSAIRE, Ana GELEZ, Edgar ONGHENA
 
 # Files
 
+![](https://md.edgar.bzh/uploads/upload_4803ea51dc46f7058a265772d8c87fa3.png)
+
+## Creer / detruire une file 
+
+Pour la créer, on alloue la taille d'une file et on initialise la queue et la tête à 0
+Pour la détruire, on libère le tableau precedemment alloué.
+
+## File vide / pleine
+
+Assez trivial, si la taille de la file correspond à sa taille maximum elle est pleine.
+De même, si la tête vaut 0, la file est vide.
+
+## Defiler
+
+Tout d'abord, on doit vérifier que la file n'est pas vide.
+Si tête et queue sont égaux, c'est comme si la file était vide donc on assigne 0 aux deux, pour reinitialiser la file.
+Si la tête est à la limite du tableau, on doit faire la jonction avec le tableau (f.tab[(N-1) +1] = f.tab[0])
+Sinon on incrémente la tête de 1.
+
+## Enfiler
+
+Tout d'abord, on doit vérifier que la file n'est pas pleine.
+Si la file est vide, on doit séparer la tête de la queuen qui sont au début égales, pour ajouter le premier élément.
+Si la queue est à la limite du tableau, on doit faire la jonction avec le tableau (f.tab[(N-1) +1] = f.tab[0])
+Sinon on incrémente la queue de 1.
+
 # Arbres ABR
 
 ## Hauteur d'un arbre (non-récursif)
