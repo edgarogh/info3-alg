@@ -68,6 +68,24 @@ bool test_double_rotation_droit() {
   return (b->cle == 200 && b->fdroite->cle == 1 && b->fgauche->fdroite->cle == 1000);
 }
 
+bool test_equilibrage() {
+  Arbre a = creer_noeud(creer_noeud(NULL, 4, NULL), 6, creer_noeud(NULL, 7, NULL));
+  a->fgauche->fgauche = creer_noeud(creer_noeud(NULL, 1, NULL), 2, creer_noeud(NULL, 3, NULL));
+  a->fgauche->fdroite = creer_noeud(NULL, 5, NULL);
+
+  a->bal = -2;
+  a->fgauche->bal = -1;
+  a->fdroite->bal = 0;
+  a->fgauche->fgauche->bal = 0;
+  a->fgauche->fgauche->fgauche->bal = 0;
+  a->fgauche->fgauche->fdroite->bal = 0;
+  a->fgauche->fdroite->bal = 0;
+
+  Arbre b = equilibrer(a);
+  int e = equilibre_avl(a);
+  return ((e == 0 || e == -1 | e == 1) && (b->cle == 4));
+}
+
 int main() {
   printf("TEST INIT_VAL :");
   if (test_init()) { printf("OK\n"); }
@@ -91,6 +109,10 @@ int main() {
 
   printf("TEST DOUBLE_ROTATION_DROIT :");
   if (test_double_rotation_droit()) { printf("OK\n"); }
+  else { printf("NOT OK\n"); }
+
+  printf("TEST EQUILIBRAGE :");
+  if (test_equilibrage()) { printf("OK\n"); }
   else { printf("NOT OK\n"); }
 
   return 1;

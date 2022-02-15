@@ -25,6 +25,7 @@ Arbre creer_noeud(Arbre gauche, int cle, Arbre droit) {
   a->cle = cle;
   a->fgauche = gauche;
   a->fdroite = droit;
+
   return a;
 }
 
@@ -113,5 +114,21 @@ Arbre double_rotation_droite(Arbre a) {
   }
   a->fgauche = rotation_gauche(a->fgauche);
   return rotation_droite(a);
+}
+
+Arbre equilibrer(Arbre a) {
+  if (a->bal == 2)
+    if (a->fdroite->bal >= 0)
+      return rotation_gauche(a);
+    else {
+      return double_rotation_gauche(a);
+    }
+  else if (a->bal == -2)
+    if (a->fgauche->bal <= 0)
+      return rotation_droite(a);
+    else {
+      return double_rotation_droite(a);
+    }
+  else return a;
 }
 
