@@ -1,3 +1,4 @@
+#include <limits.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -5,6 +6,7 @@
 #include "a234.h"
 
 #define max(a, b) ((a) > (b) ? (a) : (b))
+#define min(a, b) ((a) < (b) ? (a) : (b))
 
 int hauteur(Arbre234 a) {
     int h0, h1, h2, h3;
@@ -32,19 +34,37 @@ int NombreCles(Arbre234 a) {
 }
 
 int CleMax(Arbre234 a) {
-    /*
-       plus grande cle de l'arbre a
-    */
-
-    return 0;
+    switch (a->t) {
+    case 0:
+        return INT_MIN;
+    case 2:
+        return max(a->cles[0], CleMax(a->fils[1]));
+    case 3:
+        return max(a->cles[1], CleMax(a->fils[2]));
+    case 4:
+        return max(a->cles[2], CleMax(a->fils[3]));
+    default:
+        printf("CleMax: l'arbre n'est pas un arbre 234");
+        exit(1);
+        return 0;
+    }
 }
 
 int CleMin(Arbre234 a) {
-    /*
-       Retourne plus petite cle de l'arbre a
-    */
-
-    return 0;
+    switch (a->t) {
+    case 0:
+        return INT_MAX;
+    case 2:
+        return min(a->cles[0], CleMin(a->fils[1]));
+    case 3:
+        return min(a->cles[1], CleMin(a->fils[2]));
+    case 4:
+        return min(a->cles[2], CleMin(a->fils[3]));
+    default:
+        printf("CleMin: l'arbre n'est pas un arbre 234");
+        exit(1);
+        return 0;
+    }
 }
 
 Arbre234 RechercherCle(Arbre234 a, int cle) {
