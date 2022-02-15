@@ -1,8 +1,8 @@
 #include <gtest/gtest.h>
 extern "C" {
-    #include "abr.h"
-    #include "pile.h"
-    #include "file.h"
+#include "abr.h"
+#include "file.h"
+#include "pile.h"
 }
 
 ////////////
@@ -40,14 +40,14 @@ TEST(pile, depiler_empiler) {
     for (size_t i = 0; i < MAX_PILE_SIZE; i++) {
         ASSERT_TRUE(empiler(pile, nullptr));
     }
-    
+
     ASSERT_FALSE(empiler(pile, nullptr));
     detruire_pile(pile);
 }
 
 TEST(pile, imprimer_pile) {
-    noeud_t n1 = { .cle = 1 };
-    noeud_t n2 = { .cle = 2 };
+    noeud_t n1 = {.cle = 1};
+    noeud_t n2 = {.cle = 2};
 
     ppile_t pile = creer_pile();
     empiler(pile, &n1);
@@ -68,7 +68,7 @@ TEST(file, file_vide_file_pleine) {
     ASSERT_TRUE(file_vide(file));
 
     for (int i = 0; i < MAX_FILE_SIZE; i++) {
-        pnoeud_t n = (pnoeud_t) malloc(sizeof(noeud_t));
+        pnoeud_t n = (pnoeud_t)malloc(sizeof(noeud_t));
         n->cle = i;
         enfiler(file, n);
     }
@@ -79,7 +79,7 @@ TEST(file, file_vide_file_pleine) {
         if (i < 31)
             assert(n->cle == i);
         else
-            assert (n == NULL);
+            assert(n == NULL);
     }
 
     ASSERT_TRUE(file_vide(file));
@@ -91,7 +91,7 @@ TEST(file, defiler_enfiler) {
     pfile_t file = creer_file();
 
     for (int i = 0; i < MAX_FILE_SIZE; i++) {
-        pnoeud_t n = (pnoeud_t) malloc(sizeof(noeud_t));
+        pnoeud_t n = (pnoeud_t)malloc(sizeof(noeud_t));
         n->cle = i;
         enfiler(file, n);
         pnoeud_t x = defiler(file);
@@ -108,12 +108,10 @@ TEST(file, defiler_enfiler) {
 ///////////
 
 // Cette macro défini une fonction pour charger le fichier passé en argument
-#define load_abr(name) Arbre_t name() { return lire_arbre((char*) #name); }
+#define load_abr(name)                                                         \
+    Arbre_t name() { return lire_arbre((char *)#name); }
 
-load_abr(arbre1)
-load_abr(arbre2)
-load_abr(arbre3)
-load_abr(arbre4)
+load_abr(arbre1) load_abr(arbre2) load_abr(arbre3) load_abr(arbre4)
 
 TEST(abr, hauteur_arbre_r) {
     EXPECT_EQ(hauteur_arbre_r(arbre1()), 5);
@@ -167,31 +165,57 @@ TEST(abr, imprimer_liste_cle_triee_r) {
 }
 
 TEST(abr, imprimer_liste_cle_triee_nr) {
-    FAIL(); // TODO
+    testing::internal::CaptureStdout();
+    imprimer_liste_cle_triee_nr(arbre1());
+    EXPECT_EQ(testing::internal::GetCapturedStdout(), "1;2;3;4;5;6;8;9;10;15;");
+
+    testing::internal::CaptureStdout();
+    imprimer_liste_cle_triee_nr(arbre4());
+    EXPECT_EQ(testing::internal::GetCapturedStdout(), "1;3;4;5;6;7;8;9;12;");
 }
 
 TEST(abr, arbre_plein) {
-    FAIL(); // TODO
+    EXPECT_EQ(arbre_plein(arbre1()), true);
+    EXPECT_EQ(arbre_plein(arbre2()), false);
+    EXPECT_EQ(arbre_plein(arbre3()), true);
+    EXPECT_EQ(arbre_plein(arbre4()), false);
 }
 
 TEST(abr, arbre_parfait) {
-    FAIL(); // TODO
+    EXPECT_EQ(arbre_parfait(arbre1()), false);
+    EXPECT_EQ(arbre_parfait(arbre2()), false);
+    EXPECT_EQ(arbre_parfait(arbre3()), true);
+    EXPECT_EQ(arbre_parfait(arbre4()), false);
 }
 
 TEST(abr, rechercher_cle_sup_arbre) {
-    FAIL(); // TODO
+    EXPECT_EQ(rechercher_cle_sup_arbre(arbre1(), 20), nullptr);
+    EXPECT_EQ(rechercher_cle_sup_arbre(arbre1(), 14)->cle, 15);
+    EXPECT_EQ(rechercher_cle_sup_arbre(arbre1(), 5)->cle, 6);
+    EXPECT_EQ(rechercher_cle_sup_arbre(arbre1(), 1)->cle, 2);
 }
 
 TEST(abr, rechercher_cle_inf_arbre) {
-    FAIL(); // TODO
+    EXPECT_EQ(rechercher_cle_inf_arbre(arbre1(), 0), nullptr);
+    EXPECT_EQ(rechercher_cle_inf_arbre(arbre1(), 2)->cle, 1);
+    EXPECT_EQ(rechercher_cle_inf_arbre(arbre1(), 20)->cle, 15);
 }
 
 TEST(abr, detruire_cle_arbre) {
-    FAIL(); // TODO
+    Arbre_t a1_sans_3 = detruire_cle_arbre(arbre1(), 3);
+    EXPECT_EQ(a1_sans_3->fgauche->fdroite, nullptr);
+
+    Arbre_t a1_sans_racine = detruire_cle_arbre(arbre1(), 4);
+    EXPECT_EQ(a1_sans_racine->cle, 2);
+    EXPECT_EQ(a1_sans_racine->fgauche->cle, 1);
+    EXPECT_EQ(a1_sans_racine->fdroite->cle, 3);
+    EXPECT_EQ(a1_sans_racine->fdroite->fgauche, nullptr);
+    EXPECT_EQ(a1_sans_racine->fdroite->fdroite->cle, 6);
 }
 
 TEST(abr, intersection_deux_arbres) {
-    FAIL(); // TODO
+    Arbre_t inter = intersection_deux_arbres(arbre1(), arbre2());
+    EXPECT_EQ(inter->cle, 2);
 }
 
 TEST(abr, union_deux_arbres) {

@@ -1,7 +1,7 @@
 #ifndef _FILE_H_
 #define _FILE_H_
 
-#define MAX_FILE_SIZE       32
+#define MAX_FILE_SIZE 32
 
 #include "abr.h"
 
