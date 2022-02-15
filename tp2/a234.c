@@ -78,9 +78,23 @@ Arbre234 RechercherCle(Arbre234 a, int cle) {
 
 void AnalyseStructureArbre(Arbre234 a, int *feuilles, int *noeud2, int *noeud3,
                            int *noeud4) {
-    /*
-       calculer le nombre de feuilles, de 2-noeuds, 3-noeuds,et 4-noeuds
-    */
+    switch (a->t) {
+    case 0:
+        *feuilles += 1;
+        break;
+    case 2:
+        *noeud2 += 1;
+        break;
+    case 3:
+        *noeud3 += 1;
+        break;
+    case 4:
+        *noeud4 += 1;
+        break;
+    default:
+        printf("CleMin: l'arbre n'est pas un arbre 234");
+        exit(1);
+    }
 }
 
 Arbre234 noeud_max(Arbre234 a) {
