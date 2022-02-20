@@ -120,3 +120,94 @@ Si un des deux arbres est nul, on renvoie l'autre.
 Autrement on crée un nouvel arbre avec la même clé que `a1`. On y ajoute aussi
 la clé de de `a2`. On applique récursivement la fonction sur les enfants, et on
 ajoute les arbres ainsi obtenus comme sous-arbres du résultat.
+
+# Arbres AVL
+
+`test_avl.c` sert à tester les implémentations de `avl.c`
+
+## Types dans `avl.h`
+```c 
+typedef struct n {
+    int cle;
+    int bal;
+    struct n *fgauche, *fdroite;
+} noeud;
+
+typedef noeud *Arbre;
+
+// on utilise cette structure pour insertion, pour indiquer une information sur l'arbre qu'on renvoie
+typedef struct tuple_ajouter {
+    int val;
+    Arbre a;
+} Tuple;
+
+```
+
+## `init_avl` & `creer_noeud`
+Utile pour construire des arbres "à la main" lors des tests.
+
+## `equilibre_avl`
+Utile pour connaitre l'equilibre d'un arbre sans utiliser le champ de la structure. Permet de vérifier que chaque noeud à la bonne valeur bal qui correspon à la réalité de l'arbre.
+
+##  `rotation_gauche`
+Nous devons tout d'abord réagencer les noeuds comme indiqué dans l'algorithme. Il s'agit de deux liens : le droit de la racine et le gauche de la nouvelle racine.
+La partie la plus importante de la fonction est de conserver les propriétés de l'avl : il faut que l'equilibre enregistré soit le bon.
+
+Deux cas peuvent être observés :
+- 1) Si le sous arbre droit est équilibré, alors le sous arbre gauche du nouvel arbre ne le sera pas :
+     ![](https://md.edgar.bzh/uploads/upload_ef6898ba1c7235b03a37e29285cc69df.png)
+
+
+- 2) Si le sous arbre droit n'est pas équilibré, alors le sous arbre gauche du nouvel arbre le sera, le plus long sera directement à droite de la racine, ce qui compensera le désequilibre :
+     ![](https://md.edgar.bzh/uploads/upload_f36252bd20fe6249621d832236382c88.png)
+
+Dans tous les cas il faut appliquer : bal(A)= h(D)-h(G)
+Nous retrouvons cette logique ici :
+```c 
+root->bal = root_bal - max2(new_root_bal, 0) - 1; // on obtient soit 0 soit 1
+new_root->bal = min3(root_bal - 2, root_bal + new_root_bal - 2, new_root_bal - 1); // on obtient soit 0 soit -1
+  ```
+
+De même pour `rotation_droite`
+
+## `equilibrer`
+
+Identique à l'implementation du cours
+
+## `insertion`
+
+C'est une fonction récursive qui parcourt l'arbre jusqu'à trouver la place ou doit être inséré l'element (ligne 2 à 19). Une fois inséré, on s'occupe de le réajuster pour qu'il corresponde aux propriétés de l'AVL (ligne 21 à 27).
+
+```c 
+Tuple insertion(Arbre A, int el) {
+  int h; // si h = 0 pas besoin d équilibre l arbre, sinon h vaut 1
+  // algorithme d insertion abr classique
+  if (A == NULL) {
+    A = creer_noeud(NULL, el, NULL);
+    A->bal = 0;
+    return creer_tuple(A, 1);
+  } else if (el == A->cle) { // deja dans l arbre
+    return creer_tuple(A, 0);
+  } else if (el > A->cle) {
+    Tuple t = insertion(A->fdroite, el);
+    A->fdroite = t.a;
+    h = t.val;
+  } else {
+    Tuple t = insertion(A->fgauche, el);
+    A->fgauche = t.a;
+    h = t.val;
+    h = -h;
+  }
+  // Cette partie, equilibre l arbre et ajuste bal en conséquence
+  if (h == 0) { // inserer ne necessitera pas d equilibre (bal A = 0, 1, -1)
+    return creer_tuple(A, 0);
+  } else {
+    A->bal = A->bal + h; // sinon on met à jour bal avec notre variation
+    A = equilibrer(A); // on équilibre l arbre
+    if (A->bal == 0) return creer_tuple(A, 0); // completement équilibré
+    else return creer_tuple(A, 1); // désequilibré
+  }
+}
+```
+
+## `supression`
