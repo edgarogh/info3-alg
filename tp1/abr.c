@@ -128,7 +128,7 @@ int hauteur_arbre_r (Arbre_t a)
   if (a == NULL)
     return 0;
   else {
-    return max(hauteur_arbre_r(a->fgauche), hauteur_arbre_r(a->fdroite));
+    return 1 + max(hauteur_arbre_r(a->fgauche), hauteur_arbre_r(a->fdroite));
   }
 }
 

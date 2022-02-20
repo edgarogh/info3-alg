@@ -116,17 +116,17 @@ load_abr(arbre3)
 load_abr(arbre4)
 
 TEST(abr, hauteur_arbre_r) {
-    EXPECT_EQ(hauteur_arbre_r(arbre1()), 4);
-    EXPECT_EQ(hauteur_arbre_r(arbre2()), 4);
-    EXPECT_EQ(hauteur_arbre_r(arbre3()), 2);
-    EXPECT_EQ(hauteur_arbre_r(arbre4()), 6);
+    EXPECT_EQ(hauteur_arbre_r(arbre1()), 5);
+    EXPECT_EQ(hauteur_arbre_r(arbre2()), 5);
+    EXPECT_EQ(hauteur_arbre_r(arbre3()), 3);
+    EXPECT_EQ(hauteur_arbre_r(arbre4()), 9);
 }
 
 TEST(abr, hauteur_arbre_nr) {
-    EXPECT_EQ(hauteur_arbre_nr(arbre1()), 4);
-    EXPECT_EQ(hauteur_arbre_nr(arbre2()), 4);
-    EXPECT_EQ(hauteur_arbre_nr(arbre3()), 2);
-    EXPECT_EQ(hauteur_arbre_nr(arbre4()), 6);
+    EXPECT_EQ(hauteur_arbre_nr(arbre1()), 5);
+    EXPECT_EQ(hauteur_arbre_nr(arbre2()), 5);
+    EXPECT_EQ(hauteur_arbre_nr(arbre3()), 3);
+    EXPECT_EQ(hauteur_arbre_nr(arbre4()), 9);
 }
 
 TEST(abr, parcourir_arbre_largeur) {
