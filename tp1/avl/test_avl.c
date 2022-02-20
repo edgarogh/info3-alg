@@ -19,7 +19,7 @@ bool test_equilibre() {
   a->fdroite = creer_noeud(creer_noeud(NULL, 100, NULL), 20, creer_noeud(NULL, 200, NULL));
   a->fdroite->fdroite->fgauche = creer_noeud(NULL, 1000, NULL);
 
-  return (equilibre_avl(a) == -2 && equilibre_avl(a->fdroite) == -1 && equilibre_avl(a->fgauche) == 0);
+  return (equilibre_avl(a) == 2 && equilibre_avl(a->fdroite) == 1 && equilibre_avl(a->fgauche) == 0);
 }
 
 bool test_rotation_gauche() {
@@ -86,6 +86,41 @@ bool test_equilibrage() {
   return ((e == 0 || e == -1 | e == 1) && (b->cle == 4));
 }
 
+bool test_insertion() {
+  Arbre a = creer_noeud(NULL, 4, NULL);
+  Tuple t = insertion(a, 3);
+  t = insertion(t.a, 1);
+  t = insertion(t.a, 6);
+  t = insertion(t.a, 7);
+  t = insertion(t.a, 5);
+  t = insertion(t.a, 2);
+  a = t.a;
+
+  return (a->cle == 4 && a->fgauche->cle == 2 && a->fdroite->cle == 6
+          && a->fgauche->fgauche->cle == 1 && a->fgauche->fdroite->cle == 3
+          && a->fdroite->fgauche->cle == 5 && a->fdroite->fdroite->cle == 7
+  );
+}
+
+bool test_suppression() {
+  Arbre a = creer_noeud(NULL, 8, NULL);
+  Tuple t = insertion(a, 10);
+  t = insertion(t.a, 12);
+  t = insertion(t.a, 13);
+  t = insertion(t.a, 14);
+  t = insertion(t.a, 15);
+  t = insertion(t.a, 20);
+  t = insertion(t.a, 16);
+  t = insertion(t.a, 21);
+  t = insertion(t.a, 16);
+  t = insertion(t.a, 17);
+  a = t.a;
+
+  t = suppression(a, 15);
+  a = t.a;
+  return false;
+}
+
 int main() {
   printf("TEST INIT_VAL :");
   if (test_init()) { printf("OK\n"); }
@@ -113,6 +148,14 @@ int main() {
 
   printf("TEST EQUILIBRAGE :");
   if (test_equilibrage()) { printf("OK\n"); }
+  else { printf("NOT OK\n"); }
+
+  printf("TEST INSERTION :");
+  if (test_insertion()) { printf("OK\n"); }
+  else { printf("NOT OK\n"); }
+
+  printf("TEST SUPPRRESSION :");
+  if (test_suppression()) { printf("OK\n"); }
   else { printf("NOT OK\n"); }
 
   return 1;

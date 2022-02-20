@@ -13,6 +13,12 @@ typedef struct n {
 
 typedef noeud *Arbre;
 
+typedef struct tuple_ajouter {
+    int val;
+    Arbre a;
+} Tuple;
+
+
 Arbre init_avl();
 
 Arbre creer_noeud(Arbre gauche, int cle, Arbre droit);
@@ -29,5 +35,8 @@ Arbre double_rotation_droite(Arbre a);
 
 Arbre equilibrer(Arbre a);
 
+Tuple insertion(Arbre A, int el);
+
+Tuple suppression(Arbre A, int el);
 
 #endif //AVL_AVL_H
