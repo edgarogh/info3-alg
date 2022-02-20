@@ -1,6 +1,7 @@
+#ifndef _PILE_H_
+#define _PILE_H_
 
 #define MAX_PILE_SIZE       32
-
 
 typedef struct {
   int sommet ;
@@ -18,3 +19,7 @@ int pile_pleine (ppile_t p) ;
 pnoeud_t depiler (ppile_t p)  ;
 
 int empiler (ppile_t p, pnoeud_t pn) ;
+
+void imprimer_pile(ppile_t p);
+
+#endif

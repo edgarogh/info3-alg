@@ -1,4 +1,5 @@
 #include <stdlib.h>
+#include <stdio.h>
 #include "abr.h"
 #include "pile.h"
 
@@ -14,6 +15,7 @@ ppile_t creer_pile ()
 int detruire_pile (ppile_t p)
 {
   free(p);
+  return 1;
 }  
 
 int pile_vide (ppile_t p)
@@ -38,5 +40,20 @@ int empiler (ppile_t p, pnoeud_t pn)
   else {
     p->Tab[++(p->sommet)] = pn;
     return 1;
+  }
+}
+
+void imprimer_pile(ppile_t p)
+{
+  char is_first = 1;
+  while (!pile_vide(p)) {
+    Arbre_t sommet = depiler(p);
+    int cle = sommet->cle;
+    if (is_first) {
+      printf("%d", cle);
+      is_first = 0;
+    } else {
+      printf(",%d", cle);
+    }
   }
 }
