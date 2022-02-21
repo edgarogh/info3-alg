@@ -176,15 +176,15 @@ TEST(abr, imprimer_liste_cle_triee_nr) {
 }
 
 TEST(abr, arbre_plein) {
-    EXPECT_EQ(arbre_plein(arbre1()), true);
+    EXPECT_EQ(arbre_plein(arbre1()), false);
     EXPECT_EQ(arbre_plein(arbre2()), false);
     EXPECT_EQ(arbre_plein(arbre3()), true);
     EXPECT_EQ(arbre_plein(arbre4()), false);
 }
 
 TEST(abr, arbre_parfait) {
-    EXPECT_EQ(arbre_parfait(arbre1()), false);
-    EXPECT_EQ(arbre_parfait(arbre2()), false);
+    EXPECT_EQ(arbre_parfait(arbre1()), true);
+    EXPECT_EQ(arbre_parfait(arbre2()), true);
     EXPECT_EQ(arbre_parfait(arbre3()), true);
     EXPECT_EQ(arbre_parfait(arbre4()), false);
 }
