@@ -23,6 +23,9 @@ Les intérêts de GTest sont :
   * La possibilité de capturer la sortie standard pour tester les fonctions `imprimer_*`
   * La possibilité de tester qu'un appel invalide à `trouver_cle_min` fait bien s'arrêter le programme avec un message d'erreur spécifique
 
+![](https://camo.githubusercontent.com/96a651d347dea8d2fa5bc53f06a20a940cde8b139e9202f94ff1c77f995074f2/68747470733a2f2f6d656469612e646973636f72646170702e6e65742f6174746163686d656e74732f3934303636383231383933373334343034302f3934303636383438353833333437343130382f756e6b6e6f776e2e706e67)
+_Grâce à un petit programme C, j'ai généré cet affichage des 4 arbres de test au format DOT/Graphviz. Elle nous a aidé à bien visualiser les arbres lors de l'écriture des conditions des tests._
+
 # Piles
 
 ## Structure générale d'une pile
