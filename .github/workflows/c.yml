@@ -7,11 +7,33 @@ on:
     branches: [ main ]
 
 jobs:
-  build:
-
+  all:
     runs-on: ubuntu-latest
-
     steps:
-    - uses: actions/checkout@v2
-    - name: make
+
+    # Setup
+    - name: "[Setup] checkout"
+      uses: actions/checkout@v2
+    - name: "[Setup] install GTest"
+      run: sudo apt install -y libgtest-dev cmake
+    - name: "[Setup] compile GTest"
+      working-directory: /usr/src/gtest
+      run: |
+        sudo cmake CMakeLists.txt
+        sudo make
+        sudo cp lib/*.a /usr/lib
+    
+    # All
+    - name: "[All] make"
       run: make
+
+    # TP1
+    - name: "[TP1] test tests.cc"
+      working-directory: tp1
+      run: make run-tests
+    - name: "[TP1] test test_avl"
+      working-directory: tp1
+      run: |
+        make test_avl
+        ./test_avl || true # boooh
+  
