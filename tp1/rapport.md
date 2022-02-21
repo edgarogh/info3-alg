@@ -3,7 +3,55 @@ title: ALG TP 1
 author: Mattéo DECORSAIRE, Ana GELEZ, Edgar ONGHENA
 ---
 
+# Tests
+
+Tout notre code est testé grâce à des tests unitaires situés :
+  * Dans `test_avl.c` pour les AVL
+  * Dans `tests.cc` pour le reste
+
+`test_avl` peut être construit avec le Makefile et s'exécute assez simplement et naturellement.
+
+Le fichier `tests.cc` repose sur la bibliothèque [_Google Test_](https://github.com/google/googletest).
+Elle peut être installée sur Ubuntu avec les instructions suivantes: https://rationalcity.wordpress.com/2018/07/18/how-to-install-gtest-on-ubuntu/.
+Pour exécuter le fichier, il faut taper `make run-tests`.
+
+Certains IDE comme CLion permettent d'exécuter les tests graphiquement compte tenu que le projet soit importé via CMake.
+
+Le fichier `tests.cc` est techniquement écrit en C++ car GTest est prévu pour ce langage, mais nous n'utilisons presque aucune fonctionnalité spécifique au C++ (la seule étant l'usage de `nullptr` au lieu de `NULL`).
+Les intérêts de GTest sont :
+  * L'intégration avec notre IDE
+  * La possibilité de capturer la sortie standard pour tester les fonctions `imprimer_*`
+  * La possibilité de tester qu'un appel invalide à `trouver_cle_min` fait bien s'arrêter le programme avec un message d'erreur spécifique
+
 # Piles
+
+## Structure générale d'une pile
+
+On considère que le champ `.sommet` correspond à l'indice du plus haut élément de la pile.
+Quand la pile contient un élément, on `.sommet == 0`, et donc **si la pile est vide, `.sommet == -1`.**
+
+## Créer / détruire une pile
+
+La création d'une pile est triviale ; on alloue l'espace nécessaire pour stocker tout un objet `pile_t` et on initialise `.sommet = -1`, pour les raisons expliquées ci-dessus.
+Comme le tableau `.T` fait partie de la structure (ce n'est pas un pointeur), il n'est pas nécessaire de l'initialiser pour le moment.
+
+## Pile vide / pleine
+
+Une fois de plus, un sommet valant -1 correspond à une pile vide.
+De plus, comme le sommet est l'indice du dernier élément, la file est pleine si son sommet a pour indice le dernier élément du tableau.
+Pour un tableau de taille `N`, il s'agit de `N-1`.
+Ici, c'est `MAX_PILE_SIZE - 1`.
+
+## Dépiler / empiler
+
+Les dépilements se font simplement en _décrémentant_ le sommet, et en renvoyant la valeur de l'_ancien_ indice.
+Les empilements se font à l'envers, en _incrémentant_ le sommet puis en définissant le _nouvel_ indice.
+Dans les 2 situations, on vérifie toujours que l'opération ne va pas faire prendre une valeur invalide au sommet.
+
+## Impression de la pile
+
+Pour des raisons de débogage, une fonction `imprimer_pile` a été rajoutée à la spécification.
+Elle affiche les clés des valeurs de la pile séparées par des points-virgule.
 
 # Files
 
@@ -35,6 +83,16 @@ Sinon on incrémente la queue de 1.
 
 # Arbres ABR
 
+## Hauteur d'un arbre (récursif)
+
+Le nœud d'un arbre binaire possède ou bien 2 enfants qui sont des arbres binaires, ou bien 0 enfants (arbre vide).
+
+La hauteur d'un arbre correspond à :
+  * `0` si l'arbre est vide
+  * `1 + max(gauche, droit)` si l'arbre possède 2 enfants
+
+L'implémentation du calcul de hauteur récursif est calquée sur cette définition. Le _cas de base_ de la récursion est le cas où l'arbre est vide (il vaut `NULL`).
+
 ## Hauteur d'un arbre (non-récursif)
 
 Pour l'implémentation non-recursive de cette fonction, nous avons utilisé deux piles,
@@ -57,6 +115,63 @@ retenir comme clé. Cependant, cette solution aurait demandé des allocations su
 
 À part ça, l'algorithme est similaire à la version récursive : on regarde si la hauteur du nœud actuel
 est plus grande que la hauteur maximale, et si oui, on change la valeur de la hauteur maximale.
+
+## Parcours en largeur
+
+Le parcours en largeur de n'importe quel arbre s'implémente avec une file. On l'initialise avec le nœud racine, puis tant que la file n'est pas vide, on défile un élément dont on ajoute les enfants de nouveau sur la pile.
+En pratique, à chaque itération, on effectuerait une opération sur le nœud courant.
+Ici, on décide d'afficher la clé du nœud.
+
+## Affichage du nombre de nœuds par niveau
+
+Étant donné un arbre, nous souhaitons une séquence dont chaque élément d'indice `i` correspond au nombre de nœuds à la profondeur `i` de l'arbre.
+Le problème a été simplifié en le divisant en 2 :
+
+  * Dans un premier temps, on utilise une nouvelle fonction récursive `Arbre_t niveaux(Arbre_t a, int depth)` qui créer un arbre ayant exactement la même topologie que celui passé en paramètre, mais dont les étiquettes correspondent à la profondeur du nœud, et non à des valeurs arbitraires.
+    Il ne s'agit plus du tout d'un arbre binaire.
+    On ne s'intéressera plus à l'arbre initial passé en paramètre à `afficher_nombre_noeuds_par_niveau`.
+  * Dans un second temps, on parcourt le nouvel arbre en largeur. Par définition, le parcours en largeur se fait niveau par niveau.
+    Comme notre nouvel arbre — par construction — est étiqueté par niveau, il suffit de compter le nombre d'occurrences d'une même valeur pour savoir combien de nœuds se trouvent sur un niveau donné.
+    À chaque fois que l'étiquette du nœud visité change, on affiche le nombre de nœuds qui ont été vus avec l'étiquette précédente et on remet le compteur à zéro.
+
+## Nombre de clés d'un arbre (récursif)
+
+> Le nœud d'un arbre binaire possède ou bien 2 enfants qui sont des arbres binaires, ou bien 0 enfants (arbre vide).
+
+Dans le cas ou un nœud est vide (`NULL`), il n'a pas de clé. Sinon, il en a une.
+
+Si on étend ça à un arbre, un arbre vide n'a toujours pas de clé, car son nœud n'en a pas et qu'il a 0 enfants.
+Par contre, un arbre non vide possède sa propre clé et les clés de ses deux enfants.
+Cela s'implémente très naturellement avec une récursion.
+
+## Nombre de clés d'un arbre (non récursif)
+
+Tandis que la version récursive traite chaque nœud comme un arbre, la version non récursive parcoure tous les nœuds en largeur et ne cherche qu'à savoir si le nœud visité à une itération donnée est vide ou non ; auquel cas, elle incrémente un compteur.
+Les enfants ne sont pas considérés, puisque le parcours en largeur causera leur traversée ultérieure.
+
+## Trouver clé minimale
+
+Dans un premier temps, on s'assure que l'arbre n'est pas vide (la fonction n'aurait pas de solution).
+
+Ensuite, on se base strictement sur la définition d'un ABR.
+Il suffit de trouver le nœud le plus à gauche possible pour avoir la valeur minimale de l'arbre.
+Ici, nous faisons ça récursivement, mais il aurait été tout aussi simple de faire ça itérativement avec une quantité de mémoire finie, sans allocation ni appels.
+
+## Imprimer une liste triée (récursif)
+
+D'après la définition d'un ABR, pour imprimer une liste triée de nœuds, il suffit de faire un parcours en profondeur en commençant par la gauche (ordre croissant).
+La valeur du nœud visité actuellement doit être affichée entre la visite de la gauche et de la droite, puisque par construction, la clé ne peut qu'être comprise entre tous les nœuds de gauche et ceux de droite.
+
+## Imprimer une liste triée (non récursif)
+
+La version non récursive est considérablement plus complexe comme le parcours en largeur n'a rien de remarquable pour visiter les nœuds d'un ABR.
+Notre solution "bête" est de visiter les nœuds sans ordre particulier (ici, c'est un parcours en largeur, mais peu importe), et d'ajouter leurs clés à une pile qui reste toujours triée à un moment donné.
+
+La gestion de la pile triée se fait avec `void insertion_pile_triee(ppile_t pile1, Arbre_t a)`.
+L'algorithme repose sur une seconde pile, qui sert de stockage temporaire.
+C'est une sorte de tri par insertion où 2 éléments consécutifs sont visibles au maximum à un moment donné, comme si on essayait d'insérer une carte à jouer dans un paquet trié, en ayant le droit de n'avoir que 2 piles face à soi, et en respectant le contrat d'une pile (empilement et dépilement par le dessus).
+
+À la fin, on affiche cette pile triée.
 
 ## Arbre plein
 
