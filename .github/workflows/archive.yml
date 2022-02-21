@@ -1,0 +1,32 @@
+name: Archive the TPs
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  all:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        tp: [1]
+    steps:
+
+    # Setup
+    - name: "[Setup] checkout"
+      uses: actions/checkout@v2
+    - name: "[Setup] install Pandoc"
+      run: sudo apt install -y pandoc
+    - name: "[TP${{ matrix.tp }}] prepare archive"
+      working-directory: tp${{ matrix.tp }}
+      run: |
+        make clean
+        make rapport.pdf
+    - name: "[TP${{ matrix.tp }}] upload archive"
+      uses: actions/upload-artifact@v2.3.1
+      with:
+        name: DECORSAIRE-GELEZ-ONGHENA-TP${{ matrix.tp }}
+        path: ${{ matrix.tp }}/*
+  
