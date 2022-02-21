@@ -7,7 +7,7 @@ on:
     branches: [ main ]
 
 jobs:
-  all:
+  archive:
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -28,5 +28,5 @@ jobs:
       uses: actions/upload-artifact@v2.3.1
       with:
         name: DECORSAIRE-GELEZ-ONGHENA-TP${{ matrix.tp }}
-        path: ${{ matrix.tp }}/*
+        path: tp${{ matrix.tp }}/*
   
