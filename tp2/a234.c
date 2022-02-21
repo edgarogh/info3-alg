@@ -125,12 +125,93 @@ void Affichage_Cles_Triees_Recursive(Arbre234 a) {
     Affichage_Cles_Triees_Recursive(a->fils[a->t]);
 }
 
+/** Type Pile<Arbre234> et fonctions associées, pour la fonction
+ *  d'affichage non récursive
+ **/
+typedef struct {
+    int len;
+    int cap;
+    Arbre234 *array;
+} pile_a234;
+
+pile_a234 pile_a234_avec_capacite(int cap) {
+    pile_a234 p;
+    p.len = 0;
+    p.cap = cap;
+    p.array = malloc(sizeof(Arbre234) * cap);
+    return p;
+}
+void empiler(pile_a234 *p, Arbre234 a) {
+    if (p->len == p->cap) {
+        p->array = realloc(p->array, p->cap * 2);
+    }
+    p->array[p->len] = a;
+    p->len++;
+}
+Arbre234 depiler(pile_a234 *p) {
+    Arbre234 top = p->array[p->len - 1];
+    p->len -= 1;
+    return top;
+}
+
+/* Type Pile<int> */
+
+typedef struct {
+    int len;
+    int cap;
+    int *array;
+} pile_int;
+
+pile_int pile_int_avec_capacite(int cap) {
+    pile_int p;
+    p.len = 0;
+    p.cap = cap;
+    p.array = malloc(sizeof(int) * cap);
+    return p;
+}
+void empileri(pile_int *p, int x) {
+    if (p->len == p->cap) {
+        p->array = realloc(p->array, p->cap * 2);
+    }
+    p->array[p->len] = x;
+    p->len++;
+}
+int depileri(pile_int *p) {
+    int top = p->array[p->len - 1];
+    p->len -= 1;
+    return top;
+}
+
+Arbre234 slice(Arbre234 a, int start, int end) {
+    Arbre234 res = malloc(sizeof(noeud234));
+    res->t = end - start;
+    for (int i = start; i < end - 1; i++) {
+        res->cles[i] = a->cles[i];
+        res->fils[i] = a->fils[i];
+    }
+    res->fils[end] = a->fils[end];
+    return res;
+}
+
 void Affichage_Cles_Triees_NonRecursive(Arbre234 a) {
-    /*
-     Afficher les cles en ordre croissant
-     Cette fonction ne sera pas recursive
-     Utiliser une pile
-  */
+    pile_a234 p = pile_a234_avec_capacite(hauteur(a));
+    pile_int a_afficher = pile_int_avec_capacite(hauteur(a));
+    empiler(&p, a);
+    while (p.len > 0) {
+        Arbre234 arb = depiler(&p);
+        if (arb != NULL && arb->t != 0) {
+            if (arb->t == 1) {
+                // le cas t = 1 est possible dans cet algorithme
+                printf("%d ", arb->cles[0]);
+            } else {
+
+                empiler()
+                    // on ajoute les enfants à gauche de la première clé
+                    // dans la pile des arbres à visiter
+                    empiler(arb->fils[0]);
+            }
+        }
+    }
 }
 
 void Detruire_Cle(Arbre234 *a, int cle) {
