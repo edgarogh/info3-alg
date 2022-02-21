@@ -356,6 +356,9 @@ Arbre_t detruire_cle_arbre(Arbre_t a, int cle) {
 }
 
 Arbre_t intersection_deux_arbres(Arbre_t a1, Arbre_t a2) {
+    if (a1 == NULL || a2 == NULL) {
+        return NULL;
+    }
     Arbre_t inter = malloc(sizeof(noeud_t));
     if (rechercher_cle_arbre(a1, a2->cle)) {
         inter->cle = a2->cle;
@@ -366,11 +369,17 @@ Arbre_t intersection_deux_arbres(Arbre_t a1, Arbre_t a2) {
     Arbre_t g = intersection_deux_arbres(a1->fgauche, a2->fgauche);
     Arbre_t d = intersection_deux_arbres(a1->fdroite, a2->fdroite);
     if (inter != NULL) {
-        ajouter_noeud(inter, g);
-        ajouter_noeud(inter, d);
+        if (g != NULL) {
+            ajouter_noeud(inter, g);
+        }
+        if (d != NULL) {
+            ajouter_noeud(inter, d);
+        }
         return inter;
     } else {
-        ajouter_noeud(g, d);
+        if (g != NULL && d != NULL) {
+            ajouter_noeud(g, d);
+        }
         return g;
     }
 }
