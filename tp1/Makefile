@@ -33,6 +33,9 @@ test_abr.o: test_abr.c abr.h
 test_abr: test_abr.o pile.o file.o abr.o
 	gcc $(CFLAGS) -o test_abr abr.o pile.o file.o test_abr.o
 
+test_avl: test_avl.c avl.c avl.h
+	gcc $(CFLAGS) -o $@ test_avl.c avl.c
+
 clean:
 	rm -f *.o *~ test_abr tests
 
