@@ -235,9 +235,8 @@ n'est pas présente dans `a1`.
 
 Si un des deux arbres est nul, on renvoie l'autre.
 
-Autrement on crée un nouvel arbre avec la même clé que `a1`. On y ajoute aussi
-la clé de de `a2`. On applique récursivement la fonction sur les enfants, et on
-ajoute les arbres ainsi obtenus comme sous-arbres du résultat.
+Sinon, on crée une copie de `a1`, et on parcours récursivement `a2` pour ajouter
+toutes ces clés dans l'arbre qui vient d'être copié.
 
 # Arbres AVL
 
