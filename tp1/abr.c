@@ -106,13 +106,13 @@ void afficher_arbre(Arbre_t a, int niveau) {
     return;
 }
 
-int hauteur_arbre_r (Arbre_t a)
-{
-  if (a == NULL)
-    return 0;
-  else {
-    return 1 + max(hauteur_arbre_r(a->fgauche), hauteur_arbre_r(a->fdroite));
-  }
+int hauteur_arbre_r(Arbre_t a) {
+    if (a == NULL)
+        return 0;
+    else {
+        return 1 +
+               max(hauteur_arbre_r(a->fgauche), hauteur_arbre_r(a->fdroite));
+    }
 }
 
 int hauteur_arbre_nr(Arbre_t a) {
@@ -128,8 +128,8 @@ int hauteur_arbre_nr(Arbre_t a) {
             h = max(h, prof);
             empiler(pile, n->fgauche);
             empiler(pile, n->fdroite);
-            empiler(hauteurs, (Arbre_t)(h + 1));
-            empiler(hauteurs, (Arbre_t)(h + 1));
+            empiler(hauteurs, (Arbre_t)(prof + 1));
+            empiler(hauteurs, (Arbre_t)(prof + 1));
         }
     }
     return (int)h;
