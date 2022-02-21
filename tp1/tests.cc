@@ -55,7 +55,7 @@ TEST(pile, imprimer_pile) {
     empiler(pile, &n2);
     testing::internal::CaptureStdout();
     imprimer_pile(pile);
-    ASSERT_EQ(testing::internal::GetCapturedStdout(), "2,1,1");
+    ASSERT_EQ(testing::internal::GetCapturedStdout(), "2;1;1");
     detruire_pile(pile);
 }
 
@@ -128,14 +128,15 @@ TEST(abr, hauteur_arbre_nr) {
 }
 
 TEST(abr, parcourir_arbre_largeur) {
-    FAIL(); // TODO
     testing::internal::CaptureStdout();
     parcourir_arbre_largeur(arbre1());
-    ASSERT_EQ(testing::internal::GetCapturedStdout(), "4,2,6,1,3,5,8,10,9,15");
+    ASSERT_EQ(testing::internal::GetCapturedStdout(), "4;2;6;1;3;5;8;10;9;15;");
 }
 
 TEST(abr, afficher_nombre_noeuds_par_niveau) {
-    FAIL(); // TODO
+    testing::internal::CaptureStdout();
+    afficher_nombre_noeuds_par_niveau(arbre1());
+    EXPECT_EQ(testing::internal::GetCapturedStdout(), "0:1;1:2;2:4;3:1;4:2");
 }
 
 TEST(abr, nombre_cles_arbre_r) {
@@ -167,11 +168,11 @@ TEST(abr, imprimer_liste_cle_triee_r) {
 TEST(abr, imprimer_liste_cle_triee_nr) {
     testing::internal::CaptureStdout();
     imprimer_liste_cle_triee_nr(arbre1());
-    EXPECT_EQ(testing::internal::GetCapturedStdout(), "1;2;3;4;5;6;8;9;10;15;");
+    EXPECT_EQ(testing::internal::GetCapturedStdout(), "1;2;3;4;5;6;8;9;10;15");
 
     testing::internal::CaptureStdout();
     imprimer_liste_cle_triee_nr(arbre4());
-    EXPECT_EQ(testing::internal::GetCapturedStdout(), "1;3;4;5;6;7;8;9;12;");
+    EXPECT_EQ(testing::internal::GetCapturedStdout(), "1;3;4;5;6;7;8;9;12");
 }
 
 TEST(abr, arbre_plein) {

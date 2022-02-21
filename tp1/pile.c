@@ -45,7 +45,7 @@ void imprimer_pile(ppile_t p) {
             printf("%d", cle);
             is_first = 0;
         } else {
-            printf(",%d", cle);
+            printf(";%d", cle);
         }
     }
 }

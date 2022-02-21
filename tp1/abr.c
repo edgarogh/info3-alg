@@ -142,7 +142,7 @@ void parcourir_arbre_largeur(Arbre_t a) {
 
     while (!file_vide(file)) {
         Arbre_t current = defiler(file);
-        printf("Noeud %d\n", current->cle);
+        printf("%d;", current->cle);
         if (current->fgauche)
             enfiler(file, current->fgauche);
         if (current->fdroite)
@@ -179,8 +179,7 @@ void afficher_nombre_noeuds_par_niveau(Arbre_t a) {
             if (current->cle == current_level)
                 current_level_count++;
             else {
-                printf("Niveau %d: %d noeuds\n", current_level,
-                       current_level_count);
+                printf("%d:%d;", current_level, current_level_count);
                 current_level = current->cle;
                 current_level_count = 1;
             }
@@ -191,8 +190,7 @@ void afficher_nombre_noeuds_par_niveau(Arbre_t a) {
         }
     }
 
-    printf("Niveau %d (dernier): %d noeuds\n", current_level,
-           current_level_count);
+    printf("%d:%d", current_level, current_level_count);
 }
 
 int nombre_cles_arbre_r(Arbre_t a) {
