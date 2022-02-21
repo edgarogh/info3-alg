@@ -14,7 +14,7 @@ file.o: file.h file.c abr.h
 tests.o: tests.cc file.h pile.h abr.h
 	gcc $(CFLAGS) -Wall -c -o $@ $<
 
-LIBGTEST=/usr/lib/libgtest.so
+LIBGTEST=/usr/lib/libgtest.a
 
 tests: tests.o file.o pile.o abr.o $(LIBGTEST)
 	gcc $(CFLAGS) -Wall -o $@ $^ -L/usr/lib -lstdc++ -lgtest -lgtest_main -pthread
