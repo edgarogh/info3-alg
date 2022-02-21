@@ -15,9 +15,10 @@ jobs:
     - name: "[Setup] checkout"
       uses: actions/checkout@v2
     - name: "[Setup] install GTest"
+      run: sudo apt install -y libgtest-dev cmake
+    - name: "[Setup] compile GTest"
       working-directory: /usr/src/gtest
       run: |
-        sudo apt install -y libgtest-dev cmake
         sudo cmake CMakeLists.txt
         sudo make
         sudo cp lib/*.a /usr/lib
