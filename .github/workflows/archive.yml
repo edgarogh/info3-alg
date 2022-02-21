@@ -8,7 +8,8 @@ on:
 
 jobs:
   archive:
-    runs-on: pandoc/latex:latest-ubuntu
+    runs-on: ubuntu-latest
+    container: pandoc/latex:latest-ubuntu
     strategy:
       matrix:
         tp: [1]
