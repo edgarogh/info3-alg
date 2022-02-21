@@ -18,7 +18,7 @@ jobs:
     - name: "[Setup] checkout"
       uses: actions/checkout@v2
     - name: "[Setup] install Pandoc"
-      run: sudo apt install -y pandoc
+      run: sudo apt install -y pandoc texlive texlive-latex-extra
     - name: "[TP${{ matrix.tp }}] prepare archive"
       working-directory: tp${{ matrix.tp }}
       run: |
