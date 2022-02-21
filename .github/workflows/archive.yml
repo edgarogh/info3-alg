@@ -20,9 +20,7 @@ jobs:
       uses: actions/checkout@v2
     - name: "[TP${{ matrix.tp }}] prepare archive"
       working-directory: tp${{ matrix.tp }}
-      run: |
-        make clean
-        make rapport.pdf
+      run: pandoc rapport.md -o rapport.pdf
     - name: "[TP${{ matrix.tp }}] upload archive"
       uses: actions/upload-artifact@v2.3.1
       with:
