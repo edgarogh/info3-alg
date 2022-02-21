@@ -23,6 +23,8 @@ $(LIBGTEST):
 	@echo "libgtest n'est pas installé"
 	@echo "sur Ubuntu, suivez ces instructions:"
 	@echo "https://rationalcity.wordpress.com/2018/07/18/how-to-install-gtest-on-ubuntu/"
+	@echo ""
+	@echo "You may have to edit the LIBGTEST variable in the Makefile: on some system it is a .so, on some other it is .a"
 	@false
 
 test_abr.o: test_abr.c abr.h

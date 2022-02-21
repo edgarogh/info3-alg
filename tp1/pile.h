@@ -1,24 +1,26 @@
 #ifndef _PILE_H_
 #define _PILE_H_
 
-#define MAX_PILE_SIZE       32
+#include "abr.h"
+
+#define MAX_PILE_SIZE 32
 
 typedef struct {
-  int sommet ;
-  pnoeud_t Tab [MAX_PILE_SIZE] ;
-} pile_t, *ppile_t ;
+    int sommet;
+    pnoeud_t Tab[MAX_PILE_SIZE];
+} pile_t, *ppile_t;
 
-ppile_t creer_pile () ;
+ppile_t creer_pile();
 
-int detruire_pile (ppile_t p) ;
+int detruire_pile(ppile_t p);
 
-int pile_vide (ppile_t p) ;
+int pile_vide(ppile_t p);
 
-int pile_pleine (ppile_t p) ;
+int pile_pleine(ppile_t p);
 
-pnoeud_t depiler (ppile_t p)  ;
+pnoeud_t depiler(ppile_t p);
 
-int empiler (ppile_t p, pnoeud_t pn) ;
+int empiler(ppile_t p, pnoeud_t pn);
 
 void imprimer_pile(ppile_t p);
 

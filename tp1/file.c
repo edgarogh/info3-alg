@@ -1,5 +1,5 @@
-#include <stdlib.h>
 #include "file.h"
+#include <stdlib.h>
 
 pfile_t creer_file() {
     pfile_t f = malloc(sizeof(file_t));
@@ -13,13 +13,11 @@ int detruire_file(pfile_t f) {
     return 0;
 }
 
-
-int file_vide(pfile_t f) {
-    return (f->tete == 0);
-}
+int file_vide(pfile_t f) { return (f->tete == 0); }
 
 int file_pleine(pfile_t f) {
-    if (file_vide(f)) return 0;
+    if (file_vide(f))
+        return 0;
     int taille;
     if (f->tete <= f->queue) {
         taille = f->queue - f->tete + 1;
