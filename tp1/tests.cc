@@ -216,9 +216,14 @@ TEST(abr, detruire_cle_arbre) {
 
 TEST(abr, intersection_deux_arbres) {
     Arbre_t inter = intersection_deux_arbres(arbre1(), arbre2());
-    EXPECT_EQ(inter->cle, 2);
+    testing::internal::CaptureStdout();
+    imprimer_liste_cle_triee_r(inter);
+    EXPECT_EQ(testing::internal::GetCapturedStdout(), "2;3;5;15;");
 }
 
 TEST(abr, union_deux_arbres) {
-    FAIL(); // TODO
+    Arbre_t uni = union_deux_arbres(arbre1(), arbre2());
+    testing::internal::CaptureStdout();
+    imprimer_liste_cle_triee_r(uni);
+    EXPECT_EQ(testing::internal::GetCapturedStdout(), "1;2;3;4;5;6;8;9;10;12;14;15;23;28;");
 }

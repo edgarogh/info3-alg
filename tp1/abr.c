@@ -344,7 +344,7 @@ Arbre_t detruire_cle_arbre(Arbre_t a, int cle) {
     Arbre_t g = detruire_cle_arbre(a->fgauche, cle);
     Arbre_t d = detruire_cle_arbre(a->fdroite, cle);
     if (a->cle == cle) {
-        ajouter_noeud(g, d);
+        g = ajouter_noeud(g, d);
         return g;
     } else {
         Arbre_t resultat = malloc(sizeof(noeud_t));
@@ -359,29 +359,40 @@ Arbre_t intersection_deux_arbres(Arbre_t a1, Arbre_t a2) {
     if (a1 == NULL || a2 == NULL) {
         return NULL;
     }
-    Arbre_t inter = malloc(sizeof(noeud_t));
     if (rechercher_cle_arbre(a1, a2->cle)) {
+        Arbre_t inter = malloc(sizeof(noeud_t));
         inter->cle = a2->cle;
-    } else {
-        free(inter);
-        inter = NULL;
-    }
-    Arbre_t g = intersection_deux_arbres(a1->fgauche, a2->fgauche);
-    Arbre_t d = intersection_deux_arbres(a1->fdroite, a2->fdroite);
-    if (inter != NULL) {
-        if (g != NULL) {
-            ajouter_noeud(inter, g);
-        }
-        if (d != NULL) {
-            ajouter_noeud(inter, d);
-        }
+        inter->fgauche = intersection_deux_arbres(a1, a2->fgauche);
+        inter->fdroite = intersection_deux_arbres(a1, a2->fdroite);
         return inter;
     } else {
+        Arbre_t g = intersection_deux_arbres(a1, a2->fgauche);
+        Arbre_t d = intersection_deux_arbres(a1, a2->fdroite);
         if (g != NULL && d != NULL) {
-            ajouter_noeud(g, d);
+            g = ajouter_noeud(g, d);
+        }
+        if (g == NULL && d != NULL) {
+            return d;
         }
         return g;
     }
+}
+
+Arbre_t clone_abr(Arbre_t a) {
+    if (a == NULL) return NULL;
+    Arbre_t res = malloc(sizeof(noeud_t));
+    res->cle = a->cle;
+    res->fgauche = clone_abr(a->fgauche);
+    res->fdroite = clone_abr(a->fdroite);
+    return res;
+}
+
+// Copie toutes les clés de src dans dst
+void copy_into(Arbre_t dst, Arbre_t src) {
+    if (dst == NULL || src == NULL) return;
+    ajouter_cle(dst, src->cle);
+    copy_into(dst, src->fgauche);
+    copy_into(dst, src->fdroite);
 }
 
 Arbre_t union_deux_arbres(Arbre_t a1, Arbre_t a2) {
@@ -391,12 +402,7 @@ Arbre_t union_deux_arbres(Arbre_t a1, Arbre_t a2) {
     if (a2 == NULL) {
         return a1;
     }
-    Arbre_t uni = malloc(sizeof(noeud_t));
-    uni->cle = a1->cle;
-    ajouter_cle(uni, a2->cle);
-    Arbre_t g = union_deux_arbres(a1->fgauche, a2->fgauche);
-    Arbre_t d = union_deux_arbres(a1->fdroite, a2->fdroite);
-    ajouter_noeud(uni, g);
-    ajouter_noeud(uni, d);
+    Arbre_t uni = clone_abr(a1);
+    copy_into(uni, a2);
     return uni;
 }
