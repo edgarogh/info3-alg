@@ -26,45 +26,27 @@ int hauteur(Arbre234 a) {
 }
 
 int NombreCles(Arbre234 a) {
-    /*
-       Retourne le nombre de cles presentes dans l'arbre a
-    */
+    if (a == NULL)
+        return 0;
 
-    return 0;
+    int sum = a->t - 1;
+
+    for (size_t i = 0; i < a->t; i++) {
+        sum += NombreCles(a->fils[i]);
+    }
+
+    return sum;
 }
 
 int CleMax(Arbre234 a) {
-    switch (a->t) {
-    case 0:
-        return INT_MIN;
-    case 2:
-        return max(a->cles[0], CleMax(a->fils[1]));
-    case 3:
-        return max(a->cles[1], CleMax(a->fils[2]));
-    case 4:
-        return max(a->cles[2], CleMax(a->fils[3]));
-    default:
-        printf("CleMax: l'arbre n'est pas un arbre 234");
-        exit(1);
-        return 0;
-    }
+    return a == NULL || a->t == 0
+               ? INT_MIN
+               : max(a->cles[a->t - 2], CleMax(a->fils[a->t - 1]));
 }
 
 int CleMin(Arbre234 a) {
-    switch (a->t) {
-    case 0:
-        return INT_MAX;
-    case 2:
-        return min(a->cles[0], CleMin(a->fils[1]));
-    case 3:
-        return min(a->cles[1], CleMin(a->fils[2]));
-    case 4:
-        return min(a->cles[2], CleMin(a->fils[3]));
-    default:
-        printf("CleMin: l'arbre n'est pas un arbre 234");
-        exit(1);
-        return 0;
-    }
+    return a == NULL || a->t == 0 ? INT_MAX
+                                  : min(a->cles[0], CleMin(a->fils[0]));
 }
 
 Arbre234 RechercherCle(Arbre234 a, int cle) {
@@ -78,6 +60,10 @@ Arbre234 RechercherCle(Arbre234 a, int cle) {
 
 void AnalyseStructureArbre(Arbre234 a, int *feuilles, int *noeud2, int *noeud3,
                            int *noeud4) {
+    if (a == NULL) {
+        *feuilles += 1;
+        return;
+    }
     switch (a->t) {
     case 0:
         *feuilles += 1;
@@ -92,8 +78,11 @@ void AnalyseStructureArbre(Arbre234 a, int *feuilles, int *noeud2, int *noeud3,
         *noeud4 += 1;
         break;
     default:
-        printf("CleMin: l'arbre n'est pas un arbre 234");
+        printf("AnalyseStructureArbre: l'arbre n'est pas un arbre 234");
         exit(1);
+    }
+    for (int i = 0; i < a->t; i++) {
+        AnalyseStructureArbre(a->fils[i], feuilles, noeud2, noeud3, noeud4);
     }
 }
 
@@ -120,7 +109,7 @@ void Affichage_Cles_Triees_Recursive(Arbre234 a) {
     }
     for (int i = 0; i < a->t - 1; i++) {
         Affichage_Cles_Triees_Recursive(a->fils[i]);
-        printf("%d ", a->cles[i]);
+        printf("%d;", a->cles[i]);
     }
     Affichage_Cles_Triees_Recursive(a->fils[a->t]);
 }
@@ -147,29 +136,22 @@ pile pile_avec_capacite(int cap) {
     return p;
 }
 void empiler(pile *p, Arbre234 a, int progress) {
+    if (a == NULL)
+        return;
     if (p->len == p->cap) {
         p->array = realloc(p->array, p->cap * 2);
         p->cap *= 2;
     }
+    fprintf(stderr, "push %p %d\n", a, progress);
     p->array[p->len].a = a;
     p->array[p->len].progress = progress;
-    p->len++;
+    p->len += 1;
 }
 ParcoursArbre depiler(pile *p) {
     ParcoursArbre top = p->array[p->len - 1];
     p->len -= 1;
+    fprintf(stderr, "pop  %p, %d remaining\n", top.a, p->len);
     return top;
-}
-
-Arbre234 slice(Arbre234 a, int start, int end) {
-    Arbre234 res = malloc(sizeof(noeud234));
-    res->t = end - start;
-    for (int i = start; i < end - 1; i++) {
-        res->cles[i] = a->cles[i];
-        res->fils[i] = a->fils[i];
-    }
-    res->fils[end] = a->fils[end];
-    return res;
 }
 
 void Affichage_Cles_Triees_NonRecursive(Arbre234 a) {
@@ -181,9 +163,7 @@ void Affichage_Cles_Triees_NonRecursive(Arbre234 a) {
             if (pa.progress == 0) {
                 empiler(&p, pa.a->fils[0], 0);
                 empiler(&p, pa.a, 1);
-            } else if (pa.progress == pa.a->t) {
-                printf("%d;", pa.a->cles[pa.progress - 1]);
-            } else {
+            } else if (pa.progress != pa.a->t) {
                 empiler(&p, pa.a->fils[pa.progress], 0);
                 printf("%d;", pa.a->cles[pa.progress - 1]);
                 empiler(&p, pa.a, pa.progress + 1);
