@@ -27,12 +27,12 @@ void afficher_arbre (Arbre234 a, int niveau)
 
 	if (a->t == 2)
 	  {
-	    afficher_arbre (a->fils[2],niveau+1) ;
+	    afficher_arbre (a->fils[1],niveau+1) ;
 
 	    decalage (niveau) ;	    
-	    printf (" %d (%d)\n", a->cles[1], niveau) ;
+	    printf (" %d (%d)\n", a->cles[0], niveau) ;
 
-	    afficher_arbre (a->fils[1],niveau+1) ;
+	    afficher_arbre (a->fils[0],niveau+1) ;
 	    return ;
 	  }
 
@@ -90,13 +90,7 @@ Arbre234 lire_arbre (char *nom_fichier)
   
   while (fscanf (f, "%d", &cle) != EOF)
     {
-      ajouter_cle (&a, cle, 0, NULL) ;
-
-      /* 
-	 printf ("================== affiichage arbre avec la cle %d ==================\n", cle) ;
-	 afficher_arbre (a, 0) ;
-      */
-      
+      a = ajouter_cle (a, cle) ;      
     }
   
   fclose (f) ;
