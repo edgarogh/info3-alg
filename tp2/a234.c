@@ -50,12 +50,20 @@ int CleMin(Arbre234 a) {
 }
 
 Arbre234 RechercherCle(Arbre234 a, int cle) {
-    /*
-       rechercher si la cle a est presente dans
-       l'arbre a. Si oui, retourne le noeud ou se trouve la cle.
-    */
+    if (a == NULL)
+        return NULL;
 
-    return NULL;
+    for (size_t i = 0; i < a->t - 1; i++) {
+        int cCle = a->cles[i];
+
+        if (cCle == cle)
+            return a;
+        else if (cle < cCle) {
+            return RechercherCle(a->fils[i], cle);
+        }
+    }
+
+    return RechercherCle(a->fils[a->t - 1], cle);
 }
 
 void AnalyseStructureArbre(Arbre234 a, int *feuilles, int *noeud2, int *noeud3,
@@ -86,21 +94,96 @@ void AnalyseStructureArbre(Arbre234 a, int *feuilles, int *noeud2, int *noeud3,
     }
 }
 
-Arbre234 noeud_max(Arbre234 a) {
-    /*
-      Retourne le noeud avec la somme maximale des cles internes
-    */
+typedef struct {
+    Arbre234 a;
+    int value;
+} noeud_value;
 
-    return NULL;
+noeud_value noeud_max_and_value(Arbre234 a) {
+    if (a == NULL)
+        return (noeud_value){.a = NULL, .value = INT_MIN};
+
+    int self_max = 0;
+    for (size_t i = 0; i < a->t - 1; i++) {
+        self_max += a->cles[i];
+    }
+
+    noeud_value max = {a, self_max};
+    for (size_t i = 0; i < a->t; i++) {
+        noeud_value fils = noeud_max_and_value(a->fils[i]);
+        if (fils.value > max.value) {
+            max = fils;
+        }
+    }
+
+    return max;
+}
+
+/// Retourne le nœud avec la somme maximale des clés internes
+Arbre234 noeud_max(Arbre234 a) { return noeud_max_and_value(a).a; }
+
+typedef struct bfs_node_s {
+    Arbre234 a;
+    struct bfs_node_s *next;
+} bfs_node;
+
+typedef struct {
+    bfs_node *head;
+    bfs_node *tail;
+} bfs;
+
+bfs bfs_new() {
+    return (bfs){
+        .head = NULL,
+        .tail = NULL,
+    };
+}
+
+void bfs_push(bfs *b, Arbre234 a) {
+    bfs_node *node = malloc(sizeof(bfs_node));
+    *node = (bfs_node){
+        .a = a,
+        .next = NULL,
+    };
+
+    if (b->tail != NULL)
+        b->tail->next = node;
+    b->tail = node;
+    if (b->head == NULL)
+        b->head = node;
+}
+
+Arbre234 bfs_pop(bfs *b) {
+    if (b->head == NULL)
+        return NULL;
+    Arbre234 head = b->head->a;
+
+    bfs_node *old_head = b->head;
+    b->head = old_head->next;
+    free(old_head);
+
+    if (b->head == NULL)
+        b->tail = NULL;
+
+    return head;
 }
 
 void Afficher_Cles_Largeur(Arbre234 a) {
-    /*
-      Afficher le cles de l'arbre a avec
-      un parcours en largeur
-    */
+    if (a == NULL)
+        return;
 
-    return;
+    bfs b = bfs_new();
+    bfs_push(&b, a);
+
+    for (Arbre234 n = bfs_pop(&b); n; n = bfs_pop(&b)) {
+        for (int i = 0; i < n->t - 1; i++) {
+            printf("%d;", n->cles[i]);
+        }
+
+        for (int i = 0; i < n->t; i++) {
+            bfs_push(&b, n->fils[i]);
+        }
+    }
 }
 
 void Affichage_Cles_Triees_Recursive(Arbre234 a) {
