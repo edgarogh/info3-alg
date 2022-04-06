@@ -1,393 +1,114 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdbool.h>
 
 #include "a234.h"
 
-pnoeud234 allouer_noeud ()
-{
-  pnoeud234 p  = (pnoeud234) malloc (sizeof(noeud234)) ;
+pnoeud234 allouer_noeud() {
+    pnoeud234 p = (pnoeud234)malloc(sizeof(noeud234));
 
-  p->t = 0 ;
-  p->fils[0] = NULL ;
-  p->fils[1] = NULL ;
-  p->fils[2] = NULL ;
-  p->fils[3] = NULL ;
-  
-  return p ; 
+    p->t = 0;
+    p->cles[0] = 0;
+    p->cles[1] = 0;
+    p->cles[2] = 0;
+    p->fils[0] = NULL;
+    p->fils[1] = NULL;
+    p->fils[2] = NULL;
+    p->fils[3] = NULL;
+
+    return p;
 }
 
-
-void eclater_4noeud_racine (Arbre234 *a, int cle)
-{
-  Arbre234 a1, a2 ;
-  Arbre234 c = *a ;
-
-  c->t = 2 ;
- 
-  a1 = allouer_noeud () ;
-  a1->t = 2 ;
-  a1->cles [1] = c->cles [0] ;
-  a1->fils [1] = c->fils [0] ;
-  a1->fils [2] = c->fils [1] ;
-  a1->fils [0] = NULL ;
-  a1->fils [3] = NULL ;  
-  
-  a2 = allouer_noeud () ;
-  a2->t = 2 ;
-  a2->cles [1] = c->cles [2] ;
-  a2->fils [1] = c->fils [2] ;
-  a2->fils [2] = c->fils [3] ;
-  a2->fils [0] = NULL ;
-  a2->fils [3] = NULL ;  
-
-  c->fils [0] = NULL ;
-  c->fils [1] = a1 ;
-  c->fils [2] = a2 ;
-  c->fils [3] = NULL ;
-
-  ajouter_cle (a, cle, 0, NULL) ;
-  
-  return ;
+bool est_feuille(Arbre234 a) {
+    return (a->fils[0] == NULL || a->fils[0]->t == 0)
+        && (a->fils[1] == NULL || a->fils[1]->t == 0)
+        && (a->fils[2] == NULL || a->fils[2]->t == 0)
+        && (a->fils[3] == NULL || a->fils[3]->t == 0);
 }
 
-void eclater_4noeud_interne (Arbre234 *a, Arbre234 pere, int cle, int niveau)
-{
-  pnoeud234 eclat = allouer_noeud () ;
-  pnoeud234 c = *a;
-  
-  if (pere->t == 2)
-    {
-      if (c->cles[1] < pere->cles [1])
-	{
-	  
-	  pere->t = 3 ;	
-	  pere->cles [0] = c->cles [1] ;
-
-	  pere->fils [0] = c ;
-	  pere->fils [1] = eclat ;
-
-	  eclat->t = 2 ;
-	  eclat->cles [1] = c->cles [2] ;
-	  eclat->fils [0] = NULL  ;
-	  eclat->fils [1] = c->fils [2] ;
-	  eclat->fils [2] = c->fils[3] ;
-	  eclat->fils [3] = NULL ;
-      
-	  c->t = 2 ;
-	  c->cles [1] = c->cles [0] ;
-	  
-	  c->fils [2] = c->fils [1] ;
-	  c->fils [1] = c->fils [0] ;
-	  c->fils [0] = NULL ;
-	  c->fils [3] = NULL ;
-	}
-      else
-	{
-	  pere->t = 3 ;
-	  pere->cles [0] = pere->cles [1] ;
-	  pere->cles [1] = c->cles [1] ;
-
-
-	  pere->fils [0] = pere->fils [1] ;
-	  pere->fils [1] = c ;
-	  pere->fils [2] = eclat ;
-	  pere->fils [3] = allouer_noeud () ;
-	  	 
-	  eclat->t = 2 ;
-	  eclat->cles [1] = c->cles [2] ;
-
-	  eclat->fils [1] = c->fils[2] ;
-	  eclat->fils [2] = c->fils[3] ;
-	  eclat->fils [0] = allouer_noeud () ;
-	  eclat->fils [3] = allouer_noeud () ;
-	  
-	  c->t = 2 ;
-	  c->cles [1] = c->cles [0] ;
-	  c->cles [0] = 0 ;
-	  c->cles [2] = 0 ;
-
-	  c->fils [2] = c->fils [1] ;
-	  c->fils [1] = c->fils [0] ;
-
-	}
-             
-      if (cle > pere->cles [1])
-	{
-	  ajouter_cle (&(pere->fils[2]), cle, niveau, pere) ;
-	}
-      else
-	{
-	  if (cle > pere->cles [0])
-	    {
-	      ajouter_cle (&(pere->fils [1]), cle, niveau, pere) ;
-	    }
-	  else
-	    {
-	      ajouter_cle (&(pere->fils [0]), cle, niveau, pere) ;
-	    }
-	}
-      return;
+/* Idée de l'algorithme décrite ici : https://www.educative.io/page/5689413791121408/80001
+ *
+ * - on insère toujours dans les feuilles
+ * - on ne peut pas insérer dans un nœud 4, donc on s'assure de ne jamais
+ *   avoir de nœud 4 là où on va insérer
+ * - pour ça, si on croise un nœud 4 lors de la recherche, on le sépare
+ *
+ *     A B C                  __B__
+ *    / | | \     ->         /     \
+ *   D  E F  G              A       C
+ *                         / \     / \
+ *                        D   E   F   G
+ */
+Arbre234 ajouter_cle(Arbre234 a, int cle) {
+    // petite sécurité
+    if (a == NULL) {
+        a = allouer_noeud();
+        a->cles[0] = cle;
+        a->t = 2;
+        return a;
     }
 
+    // on a trouvé un 4 nœud dans la recherche : on le sépare
+    if (a->t == 4) {
+        Arbre234 nouvelle_racine = allouer_noeud();
+        nouvelle_racine->t = 2;
+        nouvelle_racine->cles[0] = a->cles[1];
+        
+        nouvelle_racine->fils[1] = allouer_noeud();
+        nouvelle_racine->fils[1]->t = 2;
+        nouvelle_racine->fils[1]->cles[0] = a->cles[2];
+        nouvelle_racine->fils[1]->fils[0] = a->fils[2];
+        nouvelle_racine->fils[1]->fils[1] = a->fils[3];
 
+        // on évite une allocation et une libération pas très utiles
+        // en réutilisant directement la partie gauche de l'arbre comme fils
+        // gauche de la nouvelle racine (observer A sur le schéma au dessus
+        // pour se convaincre que ça marche)
+        nouvelle_racine->fils[0] = a;
+        nouvelle_racine->fils[0]->t = 2;
 
-  // pere-t == 2
-
-  
-    if (pere->t == 3) 
-      {
-	/* 3 cas possibles */ 
-
-	if (c == pere->fils [0])
-	  {
-	    /* cas 1*/
-
-	    eclat->t = 2 ;
-	    eclat->cles [1] = c->cles [2] ;
-	    eclat->fils [1] = c->fils[2] ;
-	    eclat->fils [2] = c->fils [3] ;
-	    
-	    pere->t = 4 ;
-	    pere->cles [2] = pere->cles [1] ;
-	    pere->cles [1] = pere->cles [0] ; 
-	    pere->cles [0] = c->cles [1] ;
-
-	    pere->fils [3] = pere->fils [2] ;
-	    pere->fils [2] = pere->fils [1] ;
-	    pere->fils [0] = c ;
-	    pere->fils [1] = eclat ;
-
-	    c->t = 2 ;
-	    c->cles [1] = c->cles [0] ;
-	    c->fils [2] = c->fils [1] ;
-	    c->fils [1] = c->fils [0] ;
-
-	  }
-	else
-	  {
-	    if (c == pere->fils [1])
-	      {
-		/* cas 2 */
-
-		eclat->t = 2 ;
-		eclat->cles [1] = c->cles[2] ;
-		eclat->fils [1] = c->fils [2] ;
-		eclat->fils [2] = c->fils [3] ;
-		
-		pere->t = 4 ;
-		pere->cles [2] = pere->cles [1] ;
-                pere->cles [1] = c->cles [1] ;
-
-		pere->fils [3] = pere->fils [2] ;
-		pere->fils [2] = eclat ;
-
-		c->t = 2 ;
-		c->cles [1] = c->cles [0] ;
-		c->fils [2] = c->fils [1] ;
-                c->fils [1] = c->fils [0] ;
-	      }
-	    else
-	      {
-		/* cas 3 */
-		eclat->t = 2 ;
-		eclat->cles [1] = c->cles [2] ;
-		
-		eclat->fils [1] = c->fils [2] ;
-		eclat->fils [2] = c->fils [3] ;
-
-		pere->t = 4 ;
-                pere->cles [2] = c->cles [1] ;
-
-		pere->fils [3] = eclat ;
-		pere->fils [2] = c ;
-
-		c->t = 2 ;
-		c->cles [1] = c->cles [0] ;
-		c->fils [2] = c->fils [1] ;
-		c->fils [1] = c->fils [0] ;
-		
-	      }
-	  }
-
-	if (cle > pere->cles [2])
-	  {
-	    ajouter_cle (&(pere->fils [3]), cle, niveau, pere) ;
-	  }
-	else
-	  {
-	    if (cle > pere->cles [1])
-	      {
-		ajouter_cle (&(pere->fils [2]), cle, niveau, pere) ;
-	      }
-	    else
-	      {
-		if (cle > pere->cles [0])
-		  {
-		    ajouter_cle (&(pere->fils [1]), cle, niveau, pere) ;
-		  }
-		else
-		  {
-		    ajouter_cle (&(pere->fils [0]), cle, niveau, pere) ;
-		  }
-	      }
-	  }	
-      } // pere->t == 3
-    return ;
-}
-
-void ajouter_cle (Arbre234 *a, int cle, int niveau, Arbre234 pere)
-{
-  pnoeud234 p;
-  pnoeud234 c = *a ;
-  
-  if (c == NULL)
-    {
-      p = allouer_noeud () ;
-      p->t = 2 ;
-      p->cles [1] = cle ;
-
-      p->fils [0] = allouer_noeud () ;
-      p->fils [3] = allouer_noeud () ;
-      
-      p->fils [1] = allouer_noeud () ;
-      p->fils [2] = allouer_noeud () ;
-
-      *a = p ;
-      return ;
+        a = nouvelle_racine;
     }
 
-  if (c->t == 0)
-    {
-      // Le noeud c est vide
-      // creation d'un 2-noeud
-
-      c->cles [1] = cle ;
-      c->t = 2 ;
-      
-      c->fils [0] = allouer_noeud () ;
-      c->fils [3] = allouer_noeud () ;
-      c->fils [1] = allouer_noeud () ;
-      c->fils [2] = allouer_noeud () ;
-
-      return ;
-    } // c->t == 0
-
-  
-  if (c->t == 2)
-    {
-      // Une seule cle dans le  noeud
-
-      if (cle > c->cles[1])
-	{
-	  if (c->fils[2]->t == 0)
-	    {
-	      c->t = 3 ;
-	      c->cles [0] = c->cles [1] ;
-	      c->cles [1] = cle ;
-		  
-	      c->fils [0] = c->fils [1] ;
-	      c->fils [1] = c->fils [2] ;
-	      c->fils [2] = allouer_noeud () ;
-	    }
-	  else
-	    {
-	      ajouter_cle (&(*a)->fils [2], cle, niveau+1, c) ;
-	    }
-	  return ;
-	}      
-      
-      if (cle < c->cles[1])
-	{
-	  if (c->fils[1]->t == 0)
-	    {
-	      c->cles[0] = cle ;
-	      c->t = 3 ;
-	      c->fils[0] = allouer_noeud () ;
-	    }
-	  else
-	    {
-	      ajouter_cle (&(*a)->fils [1], cle, niveau+1, c) ;
-	    }
-	}
-
-      return ;
-    } // (*a)->t == 2
-
-  
-  if (c->t == 3)
-    {
-      // deux cles dans le noeud
-      
-      if (cle > c->cles [1])
-	{
-	  if (c->fils[2]->t == 0)
-	    {
-	      c->cles[2] = cle ;
-	      c->t = 4 ;
-	      c->fils [3] = allouer_noeud () ;
-	    }
-	  else
-	    {
-	      ajouter_cle (&((*a)->fils[2]), cle, niveau+1, c) ;
-	    }
-	}
-      else
-	{
-	  if (cle > c->cles [0])
-	    {
-	      if (c->fils[1]->t == 0)
-		{
-		  c->cles [2] = c->cles [1] ;
-		  c->cles [1] = cle ;
-		  c->t = 4 ;
-		  c->fils [3] = c->fils [2] ;
-		  c->fils [2] = allouer_noeud () ;
-		}
-	      else
-		{
-		  ajouter_cle (&(*a)->fils [1], cle, niveau+1, c) ;
-		}
-	    }
-	  else
-	    {
-	      if (c->fils[0]->t == 0)
-		{
-		  c->cles [2] = c->cles [1] ;
-		  c->cles [1] = c->cles [0] ;
-		  c->cles [0] = cle ;
-		  c->t = 4 ;
-
-		  c->fils[3] = c->fils[2] ;
-		  c->fils[2] = c->fils[1] ;
-		  c->fils[1] = c->fils[0] ;
-		  c->fils[0] = allouer_noeud () ;
-		  
-		} 
-	      else
-		{
-		  ajouter_cle (&(*a)->fils [0], cle, niveau+1, c) ;
-		}	      
-	    }
-	}
-
-      return ;
-    } // c->t == 3
-
-  
-  // trois cles dans le noeud courant
-  // Le noeud doit etre eclate
-  // c->t == 4
-
-  if (niveau == 0) // noeud racine
-    {
-      eclater_4noeud_racine (a, cle) ;
+    // on est arrivés au bout de la recherche, on insère ici
+    if (est_feuille(a)) {
+        // selon le nombre de clés actuelles, on regarde
+        // où insérer et on décale les clés déjà présentes si besoin
+        // il y a sans doute moyen de faire ça avec une boucle de 4 lignes
+        // mais c'est un coup à faire une erreur d'indice donc j'écris tous
+        // à la main, il y a pas tant de cas que ça
+        if (a->t == 2) {
+            if (a->cles[0] <= cle) {
+                a->cles[1] = cle;
+            } else {
+                a->cles[1] = a->cles[0];
+                a->cles[0] = a->cles[1];
+            }
+            a->t = 3;
+        } else if (a->t == 3) {
+            if (cle >= a->cles[1]) {
+                a->cles[2] = cle;
+            } else if (cle >= a->cles[0]) {
+                a->cles[2] = a->cles[1];
+                a->cles[1] = cle;
+            } else {
+                a->cles[2] = a->cles[1];
+                a->cles[1] = a->cles[0];
+                a->cles[0] = cle;
+            }
+            a->t = 4;
+        } else {
+            printf("PANIC (ajouter_cle) : la feuille a %d enfants\n", a->t);
+            exit(1);
+        }
+    } else { // on est pas sur une feuille : on continue à descendre dans l'arbre
+        int i = 0;
+        while (i < a->t - 1 && a->cles[i] < cle) {
+            i++;
+        }
+        a->fils[i] = ajouter_cle(a->fils[i], cle);
     }
-  
-  else   
-    {
-      eclater_4noeud_interne (a, pere, cle, niveau) ;
-    }
- 
-  return ;
+
+    return a;
 }
