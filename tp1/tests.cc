@@ -113,7 +113,7 @@ TEST(file, defiler_enfiler) {
 
 load_abr(arbre1) load_abr(arbre2) load_abr(arbre3) load_abr(arbre4)
 
-TEST(abr, hauteur_arbre_r) {
+    TEST(abr, hauteur_arbre_r) {
     EXPECT_EQ(hauteur_arbre_r(arbre1()), 5);
     EXPECT_EQ(hauteur_arbre_r(arbre2()), 5);
     EXPECT_EQ(hauteur_arbre_r(arbre3()), 3);
@@ -225,5 +225,6 @@ TEST(abr, union_deux_arbres) {
     Arbre_t uni = union_deux_arbres(arbre1(), arbre2());
     testing::internal::CaptureStdout();
     imprimer_liste_cle_triee_r(uni);
-    EXPECT_EQ(testing::internal::GetCapturedStdout(), "1;2;3;4;5;6;8;9;10;12;14;15;23;28;");
+    EXPECT_EQ(testing::internal::GetCapturedStdout(),
+              "1;2;3;4;5;6;8;9;10;12;14;15;23;28;");
 }
