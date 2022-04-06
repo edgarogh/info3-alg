@@ -15,7 +15,7 @@ jobs:
     - name: "[Setup] checkout"
       uses: actions/checkout@v2
     - name: "[Setup] install GTest"
-      run: sudo apt install -y libgtest-dev cmake lcov
+      run: sudo apt install -y libgtest-dev cmake lcov gcovr
     - name: "[Setup] compile GTest"
       working-directory: /usr/src/gtest
       run: |
