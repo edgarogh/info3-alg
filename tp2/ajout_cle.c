@@ -83,7 +83,7 @@ Arbre234 ajouter_cle(Arbre234 a, int cle) {
                 a->cles[1] = cle;
             } else {
                 a->cles[1] = a->cles[0];
-                a->cles[0] = a->cles[1];
+                a->cles[0] = cle;
             }
             a->t = 3;
         } else if (a->t == 3) {
