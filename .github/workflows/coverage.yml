@@ -1,0 +1,37 @@
+name: Coverage
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  all:
+    runs-on: ubuntu-latest
+    steps:
+
+    # Setup
+    - name: "[Setup] checkout"
+      uses: actions/checkout@v2
+    - name: "[Setup] install GTest"
+      run: sudo apt install -y libgtest-dev cmake lcov gcovr
+    - name: "[Setup] compile GTest"
+      working-directory: /usr/src/gtest
+      run: |
+        sudo cmake CMakeLists.txt
+        sudo make
+        sudo cp lib/*.a /usr/lib
+
+    - name: "[CMake] Coverage build"
+      run: |
+        mkdir cmake-build-coverage
+        cd cmake-build-coverage
+        cmake .. -DCMAKE_BUILD_TYPE=Coverage
+        make tests_cobertura
+    - uses: codecov/codecov-action@v2
+      with:
+        token: ${{ secrets.CODECOV_TOKEN }}
+        files: ./tp1/coverage.xml
+        verbose: true
+  

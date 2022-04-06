@@ -4,3 +4,4 @@ add_executable(test_avl test_avl.c avl.c avl.h)
 
 add_executable(tests tests.cc file.c pile.c abr.c)
 target_link_libraries(tests gtest gtest_main pthread)
+coverage(tests)
