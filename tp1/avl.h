@@ -18,7 +18,6 @@ typedef struct tuple_ajouter {
     Arbre a;
 } Tuple;
 
-
 Arbre init_avl();
 
 Arbre creer_noeud(Arbre gauche, int cle, Arbre droit);
@@ -39,4 +38,4 @@ Tuple insertion(Arbre A, int el);
 
 Tuple suppression(Arbre A, int el);
 
-#endif //AVL_AVL_H
+#endif // AVL_AVL_H

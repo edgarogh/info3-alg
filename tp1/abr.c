@@ -379,7 +379,8 @@ Arbre_t intersection_deux_arbres(Arbre_t a1, Arbre_t a2) {
 }
 
 Arbre_t clone_abr(Arbre_t a) {
-    if (a == NULL) return NULL;
+    if (a == NULL)
+        return NULL;
     Arbre_t res = malloc(sizeof(noeud_t));
     res->cle = a->cle;
     res->fgauche = clone_abr(a->fgauche);
@@ -389,7 +390,8 @@ Arbre_t clone_abr(Arbre_t a) {
 
 // Copie toutes les clés de src dans dst
 void copy_into(Arbre_t dst, Arbre_t src) {
-    if (dst == NULL || src == NULL) return;
+    if (dst == NULL || src == NULL)
+        return;
     ajouter_cle(dst, src->cle);
     copy_into(dst, src->fgauche);
     copy_into(dst, src->fdroite);

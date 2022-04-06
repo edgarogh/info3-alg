@@ -1,7 +1,7 @@
+#include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <stdbool.h>
 
 #include "a234.h"
 
@@ -21,13 +21,14 @@ pnoeud234 allouer_noeud() {
 }
 
 bool est_feuille(Arbre234 a) {
-    return (a->fils[0] == NULL || a->fils[0]->t == 0)
-        && (a->fils[1] == NULL || a->fils[1]->t == 0)
-        && (a->fils[2] == NULL || a->fils[2]->t == 0)
-        && (a->fils[3] == NULL || a->fils[3]->t == 0);
+    return (a->fils[0] == NULL || a->fils[0]->t == 0) &&
+           (a->fils[1] == NULL || a->fils[1]->t == 0) &&
+           (a->fils[2] == NULL || a->fils[2]->t == 0) &&
+           (a->fils[3] == NULL || a->fils[3]->t == 0);
 }
 
-/* Idée de l'algorithme décrite ici : https://www.educative.io/page/5689413791121408/80001
+/* Idée de l'algorithme décrite ici :
+ * https://www.educative.io/page/5689413791121408/80001
  *
  * - on insère toujours dans les feuilles
  * - on ne peut pas insérer dans un nœud 4, donc on s'assure de ne jamais
@@ -54,7 +55,7 @@ Arbre234 ajouter_cle(Arbre234 a, int cle) {
         Arbre234 nouvelle_racine = allouer_noeud();
         nouvelle_racine->t = 2;
         nouvelle_racine->cles[0] = a->cles[1];
-        
+
         nouvelle_racine->fils[1] = allouer_noeud();
         nouvelle_racine->fils[1]->t = 2;
         nouvelle_racine->fils[1]->cles[0] = a->cles[2];
@@ -102,7 +103,8 @@ Arbre234 ajouter_cle(Arbre234 a, int cle) {
             printf("PANIC (ajouter_cle) : la feuille a %d enfants\n", a->t);
             exit(1);
         }
-    } else { // on est pas sur une feuille : on continue à descendre dans l'arbre
+    } else { // on est pas sur une feuille : on continue à descendre dans
+             // l'arbre
         int i = 0;
         while (i < a->t - 1 && a->cles[i] < cle) {
             i++;
