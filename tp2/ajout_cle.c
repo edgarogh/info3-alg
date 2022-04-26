@@ -72,7 +72,7 @@ Arbre234 ajouter_cle(Arbre234 a, int cle) {
             a = split(a, a->fils[i], cle);
             // maintenant qu'il a été séparé, on peut refaire l'insertion
             // sans souci, on passera dans le else juste en dessous
-            ajouter_cle(a, cle);
+            a = ajouter_cle(a, cle);
         } else { // sinon on ajoute récursivement sans se poser de questions
             a->fils[i] = ajouter_cle(a->fils[i], cle);
         }
@@ -92,7 +92,7 @@ Arbre234 split(Arbre234 parent, Arbre234 a, int cle) {
         nouvelle_racine = allouer_noeud();
         nouvelle_racine->t = 2;
         nouvelle_racine->cles[0] = a->cles[1];
-        pos = 1;
+        pos = 0;
     } else {
         // On a une racine : l'élément qui remonte est ajouté dans le parent
         int middle = a->cles[1];
@@ -133,33 +133,35 @@ int inserer_ici(Arbre234 a, int cle) {
     // il y a sans doute moyen de faire ça avec une boucle de 4 lignes
     // mais c'est un coup à faire une erreur d'indice donc j'écris tous
     // à la main, il y a pas tant de cas que ça
+    int pos;
     if (a->t == 2) {
         if (a->cles[0] <= cle) {
             a->cles[1] = cle;
-            return 1;
+            pos = 1;
         } else {
             a->cles[1] = a->cles[0];
             a->cles[0] = cle;
-            return 0;
+            pos = 0;
         }
         a->t = 3;
     } else if (a->t == 3) {
         if (cle >= a->cles[1]) {
             a->cles[2] = cle;
-            return 2;
+            pos = 2;
         } else if (cle >= a->cles[0]) {
             a->cles[2] = a->cles[1];
             a->cles[1] = cle;
-            return 1;
+            pos = 1;
         } else {
             a->cles[2] = a->cles[1];
             a->cles[1] = a->cles[0];
             a->cles[0] = cle;
-            return 0;
+            pos = 0;
         }
         a->t = 4;
     } else {
         printf("PANIC (inserer_ici) : la feuille a %d enfants\n", a->t);
         exit(1);
     }
+    return pos;
 }
