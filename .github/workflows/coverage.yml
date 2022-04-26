@@ -28,7 +28,8 @@ jobs:
         mkdir cmake-build-coverage
         cd cmake-build-coverage
         cmake .. -DCMAKE_BUILD_TYPE=Coverage
-        make tests_cobertura
+        make tests_tp1_cobertura
+        make tests_tp2_cobertura
     - uses: codecov/codecov-action@v2
       with:
         token: ${{ secrets.CODECOV_TOKEN }}
