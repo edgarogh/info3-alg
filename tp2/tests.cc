@@ -25,8 +25,8 @@ TEST(a234, analyse) {
     int f = 0, n2 = 0, n3 = 0, n4 = 0;
     AnalyseStructureArbre(a, &f, &n2, &n3, &n4);
     EXPECT_EQ(f, 20);
-    EXPECT_EQ(n2, 4);
-    EXPECT_EQ(n3, 0);
+    EXPECT_EQ(n2, 2);
+    EXPECT_EQ(n3, 1);
     EXPECT_EQ(n4, 5);
 }
 

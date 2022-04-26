@@ -142,7 +142,6 @@ void empiler(pile *p, Arbre234 a, int progress) {
         p->array = realloc(p->array, p->cap * 2);
         p->cap *= 2;
     }
-    fprintf(stderr, "push %p %d\n", a, progress);
     p->array[p->len].a = a;
     p->array[p->len].progress = progress;
     p->len += 1;
@@ -150,7 +149,6 @@ void empiler(pile *p, Arbre234 a, int progress) {
 ParcoursArbre depiler(pile *p) {
     ParcoursArbre top = p->array[p->len - 1];
     p->len -= 1;
-    fprintf(stderr, "pop  %p, %d remaining\n", top.a, p->len);
     return top;
 }
 
