@@ -3,13 +3,12 @@ extern "C" {
 #include "a234.h"
 }
 
-#define load_arbre(name)                                                         \
-    Arbre234 name() { return lire_arbre((char*)"data/" #name); }
+#define load_arbre(name)                                                       \
+    Arbre234 name() { return lire_arbre((char *)"data/" #name); }
 
 load_arbre(arbre1) load_arbre(arbre3) load_arbre(arbre16)
 
-
-TEST(a234, cle_min) {
+    TEST(a234, cle_min) {
     EXPECT_EQ(CleMin(arbre1()), 50);
     EXPECT_EQ(CleMin(arbre3()), 30);
     EXPECT_EQ(CleMin(arbre16()), 10);
