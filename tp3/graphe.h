@@ -55,3 +55,7 @@ void afficher_graphe_profondeur(pgraphe_t g, int r);
 void afficher_graphe_largeur(pgraphe_t g, int r);
 
 void algo_dijkstra(pgraphe_t g, int r);
+
+int degre_sortant_sommet(pgraphe_t g, psommet_t s);
+
+int degre_entrant_sommet(pgraphe_t g, psommet_t cible);

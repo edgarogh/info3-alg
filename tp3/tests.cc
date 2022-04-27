@@ -28,6 +28,28 @@ TEST(graph, afficher_graphe_profondeur) {}
 
 TEST(graph, dijkstra) {}
 
+TEST(graph, degre_sortant_sommet) {
+    pgraphe_t g = gr3();
+    psommet_t s8 = chercher_sommet(g, 8);
+    psommet_t s9 = chercher_sommet(g, 9);
+
+    EXPECT_EQ(degre_sortant_sommet(g, s8), 1);
+    EXPECT_EQ(degre_sortant_sommet(g, s9), 0);
+
+    psommet_t s1 = chercher_sommet(g, 1);
+
+    EXPECT_EQ(degre_sortant_sommet(g, s1), 4);
+}
+
+TEST(graph, degre_entrant_sommet) {
+    pgraphe_t g = gr3();
+    psommet_t s8 = chercher_sommet(g, 8);
+    psommet_t s9 = chercher_sommet(g, 9);
+
+    EXPECT_EQ(degre_entrant_sommet(g, s8), 0);
+    EXPECT_EQ(degre_entrant_sommet(g, s9), 1);
+}
+
 TEST(props, elementaire) {}
 
 TEST(props, simple) {}

@@ -172,21 +172,22 @@ void algo_dijkstra(pgraphe_t g, int r) {
 // ======================================================================
 
 int degre_sortant_sommet(pgraphe_t g, psommet_t s) {
-    /*
-      Cette fonction retourne le nombre d'arcs sortants
-      du sommet n dans le graphe g
-    */
-
-    return 0;
+    int degre = 0;
+    for (parc_t a = s->liste_arcs; a; a = a->arc_suivant) {
+        degre++;
+    }
+    return degre;
 }
 
-int degre_entrant_sommet(pgraphe_t g, psommet_t s) {
-    /*
-      Cette fonction retourne le nombre d'arcs entrants
-      dans le noeud n dans le graphe g
-    */
-
-    return 0;
+int degre_entrant_sommet(pgraphe_t g, psommet_t cible) {
+    int degre = 0;
+    for (psommet_t s = g; s; s = s->sommet_suivant) {
+        for (parc_t a = s->liste_arcs; a; a = a->arc_suivant) {
+            if (a->dest == cible)
+                degre++;
+        }
+    }
+    return degre;
 }
 
 int degre_maximal_graphe(pgraphe_t g) {
