@@ -30,6 +30,7 @@ jobs:
         cmake .. -DCMAKE_BUILD_TYPE=Coverage
         make tests_tp1_cobertura
         make tests_tp2_cobertura
+        make tests_tp3_cobertura
     - uses: codecov/codecov-action@v2
       with:
         token: ${{ secrets.CODECOV_TOKEN }}

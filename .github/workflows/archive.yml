@@ -12,7 +12,7 @@ jobs:
     container: pandoc/latex:latest-ubuntu
     strategy:
       matrix:
-        tp: [1]
+        tp: [1, 2, 3]
     steps:
 
     # Setup
