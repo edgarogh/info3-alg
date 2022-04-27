@@ -190,19 +190,27 @@ int degre_entrant_sommet(pgraphe_t g, psommet_t s) {
 }
 
 int degre_maximal_graphe(pgraphe_t g) {
-    /*
-      Max des degres des sommets du graphe g
-    */
-
-    return 0;
+    pgraphe_t graphe = g;
+    int m = INT_MIN;
+    for (; g != NULL; g = g->sommet_suivant) {
+        int degre = degre_sortant_sommet(graphe, g);
+        if (degre > m) {
+            m = degre;
+        }
+    }
+    return m;
 }
 
 int degre_minimal_graphe(pgraphe_t g) {
-    /*
-      Min des degres des sommets du graphe g
-    */
-
-    return 0;
+    pgraphe_t graphe = g;
+    int m = INT_MAX;
+    for (; g != NULL; g = g->sommet_suivant) {
+        int degre = degre_sortant_sommet(graphe, g);
+        if (degre < m) {
+            m = degre;
+        }
+    }
+    return m;
 }
 
 int independant(pgraphe_t g) {
