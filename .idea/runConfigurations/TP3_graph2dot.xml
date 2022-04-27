@@ -1,0 +1,7 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="TP3/graph2dot" type="CMakeRunConfiguration" factoryName="Application" PROGRAM_PARAMS="gr0 gr1 gr2 gr3 gr4 gr5 gr6 gr_couleurs gr_planning gr_sched1 gr_sched2" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" WORKING_DIR="file://$PROJECT_DIR$/tp3/data" PASS_PARENT_ENVS_2="true" PROJECT_NAME="info3-alg-tp3" TARGET_NAME="graph2dot" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="info3-alg-tp3" RUN_TARGET_NAME="graph2dot">
+    <method v="2">
+      <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+    </method>
+  </configuration>
+</component>
