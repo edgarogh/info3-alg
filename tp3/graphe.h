@@ -59,3 +59,14 @@ void algo_dijkstra(pgraphe_t g, int r);
 int degre_sortant_sommet(pgraphe_t g, psommet_t s);
 
 int degre_entrant_sommet(pgraphe_t g, psommet_t cible);
+
+/// Renvoie `true` si les arêtes du graphe n'ont pas de sommet en commun
+int independant(pgraphe_t g);
+
+/// Renvoie `true` si toutes les paires de sommet du graphe sont jointes par un
+/// arc
+int complet(pgraphe_t g);
+
+/// Graphe régulier: tous les sommets ont le meme degré
+/// g est le ponteur vers le premier sommet du graphe
+int regulier(pgraphe_t g);

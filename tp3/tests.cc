@@ -17,6 +17,8 @@ load_graphe(gr3);
 load_graphe(gr4);
 load_graphe(gr5);
 load_graphe(gr6);
+load_graphe(gr_complet);
+load_graphe(gr_complet_presque);
 load_graphe(gr_couleurs);
 load_graphe(gr_planning);
 load_graphe(gr_sched1);
@@ -48,6 +50,23 @@ TEST(graph, degre_entrant_sommet) {
 
     EXPECT_EQ(degre_entrant_sommet(g, s8), 0);
     EXPECT_EQ(degre_entrant_sommet(g, s9), 1);
+}
+
+TEST(props, independant) {}
+
+TEST(props, complet) {
+    EXPECT_TRUE(complet(gr_complet()));
+    EXPECT_FALSE(complet(gr_complet_presque()));
+}
+
+TEST(props, regulier) {
+    EXPECT_TRUE(regulier(gr_regulier_1()));
+    EXPECT_TRUE(regulier(gr_regulier_2()));
+    EXPECT_TRUE(regulier(gr_complet()));
+    EXPECT_FALSE(regulier(gr_complet_presque()));
+    EXPECT_FALSE(regulier(gr0()));
+    EXPECT_FALSE(regulier(gr1()));
+    EXPECT_FALSE(regulier(gr_planning()));
 }
 
 TEST(props, elementaire) {}

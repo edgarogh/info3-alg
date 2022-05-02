@@ -5,6 +5,7 @@
 */
 
 #include <limits.h>
+#include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -213,19 +214,33 @@ int independant(pgraphe_t g) {
 }
 
 int complet(pgraphe_t g) {
-    /* Toutes les paires de sommet du graphe sont jointes par un arc */
+    size_t sommets = 0, arcs = 0;
 
-    return 0;
+    for (psommet_t s = g; s; s = s->sommet_suivant) {
+        sommets++;
+
+        for (parc_t a = s->liste_arcs; a; a = a->arc_suivant) {
+            arcs++;
+        }
+    }
+
+    return (sommets * sommets) == arcs;
 }
 
 int regulier(pgraphe_t g) {
-    /*
-       graphe regulier: tous les sommets ont le meme degre
-       g est le ponteur vers le premier sommet du graphe
-       renvoie 1 si le graphe est régulier, 0 sinon
-    */
+    int expected;
+    if (g == NULL) {
+        return true;
+    } else {
+        expected = degre_sortant_sommet(g, g);
+    }
 
-    return 0;
+    for (psommet_t s = g->sommet_suivant; s; s = s->sommet_suivant) {
+        if (degre_sortant_sommet(g, s) != expected)
+            return false;
+    }
+
+    return true;
 }
 
 /*
