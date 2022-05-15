@@ -21,6 +21,8 @@ load_graphe(gr_complet);
 load_graphe(gr_complet_presque);
 load_graphe(gr_couleurs);
 load_graphe(gr_planning);
+load_graphe(gr_regulier_1);
+load_graphe(gr_regulier_2);
 load_graphe(gr_sched1);
 load_graphe(gr_sched2);
 
@@ -67,6 +69,29 @@ TEST(props, regulier) {
     EXPECT_FALSE(regulier(gr0()));
     EXPECT_FALSE(regulier(gr1()));
     EXPECT_FALSE(regulier(gr_planning()));
+}
+
+TEST(chemin, chemin_new) {
+    pgraphe_t g1 = gr1();
+
+    int gr1_13212_p[] = {1, 3, 2, 1, 2};
+    chemin_t gr1_13212 = chemin_new(g1, 5, gr1_13212_p);
+
+    EXPECT_EQ(gr1_13212.len, 4);
+    EXPECT_EQ(gr1_13212.arcs[2]->dest, gr1_13212.start);
+}
+
+TEST(chemin, chemin_sommet) {
+    pgraphe_t g1 = gr1();
+
+    int gr1_13212_p[] = {1, 3, 2, 1, 2};
+    chemin_t gr1_13212 = chemin_new(g1, 5, gr1_13212_p);
+
+    EXPECT_EQ(chemin_sommet(gr1_13212, 0), gr1_13212.start);
+    EXPECT_EQ(chemin_sommet(gr1_13212, 1), chercher_sommet(g1, 3));
+    EXPECT_EQ(chemin_sommet(gr1_13212, 2), chercher_sommet(g1, 2));
+    EXPECT_EQ(chemin_sommet(gr1_13212, 3), chercher_sommet(g1, 1));
+    EXPECT_EQ(chemin_sommet(gr1_13212, 4), chercher_sommet(g1, 2));
 }
 
 TEST(props, elementaire) {}

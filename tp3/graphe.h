@@ -34,6 +34,12 @@ typedef struct a {
 
 typedef psommet_t pgraphe_t;
 
+typedef struct c {
+    size_t len;
+    psommet_t start;
+    parc_t *arcs;
+} chemin_t;
+
 psommet_t chercher_sommet(pgraphe_t g, int label);
 
 void ajouter_arc(psommet_t o, psommet_t d, int distance);
@@ -70,3 +76,11 @@ int complet(pgraphe_t g);
 /// Graphe régulier: tous les sommets ont le meme degré
 /// g est le ponteur vers le premier sommet du graphe
 int regulier(pgraphe_t g);
+
+chemin_t chemin_new(pgraphe_t g, size_t len, const int *labels);
+
+/// Renvoie le sommet du chemin `chemin` à l'indice `index`.
+///
+/// L'indice est compris entre 0 et `chemin.len` (inclus), car il y a un sommet
+/// de plus que d'arcs.
+psommet_t chemin_sommet(chemin_t chemin, int index);

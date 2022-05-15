@@ -243,6 +243,6 @@ int regulier(pgraphe_t g) {
     return true;
 }
 
-/*
-  placer les fonctions de l'examen 2017 juste apres
-*/
+psommet_t chemin_sommet(chemin_t chemin, int index) {
+    return (index == 0) ? chemin.start : chemin.arcs[index - 1]->dest;
+}
