@@ -209,9 +209,20 @@ int degre_minimal_graphe(pgraphe_t g) {
 }
 
 int independant(pgraphe_t g) {
-    /* Les aretes du graphe n'ont pas de sommet en commun */
+    for (psommet_t s1 = g; s1; s1 = s1->sommet_suivant) {
+        if (s1->liste_arcs && s1->liste_arcs->arc_suivant) {
+            return false;
+        }
 
-    return 0;
+        psommet_t dest = s1->liste_arcs->dest;
+
+        for (psommet_t s2 = g; s2; s2 = s2->sommet_suivant) {
+            if (dest == s2)
+                return false;
+        }
+    }
+
+    return true;
 }
 
 int complet(pgraphe_t g) {
