@@ -171,20 +171,51 @@ TEST(chemin, chemin_sommet) {
     EXPECT_EQ(chemin_sommet(gr1_13212, 4), chercher_sommet(g1, 2));
 }
 
-TEST(props, elementaire) {}
+TEST(props, elementaire) {
+    pgraphe_t g1 = gr1();
+    int gr1_1321_p[] = {1, 3, 2, 1};
+
+    chemin_t gr1_1321 = chemin_new(g1, 4, gr1_1321_p);
+    EXPECT_FALSE(elementaire(g1, gr1_1321));
+
+    chemin_t gr1_132 = chemin_new(g1, 3, gr1_1321_p);
+    EXPECT_TRUE(elementaire(g1, gr1_132));
+
+    chemin_t gr1_13 = chemin_new(g1, 2, gr1_1321_p);
+    EXPECT_TRUE(elementaire(g1, gr1_13));
+
+    int gr1_3213_p[] = {3, 2, 1, 3};
+    chemin_t gr1_3213 = chemin_new(g1, 4, gr1_3213_p);
+    EXPECT_FALSE(elementaire(g1, gr1_3213));
+}
 
 TEST(props, simple) {}
 
 TEST(props, eulerien) {}
 
-TEST(props, hamiltionien) {}
+TEST(props, hamiltonien) {}
 
-TEST(props, graphe_eulerien) {}
+TEST(props, graphe_eulerien) {
+    EXPECT_TRUE(graphe_eulerien(gr1()));
+    EXPECT_TRUE(graphe_eulerien(gr5()));
+}
 
-TEST(props, graphe_hamiltionien) {}
+TEST(props, graphe_hamiltonien) {
+    EXPECT_FALSE(graphe_hamiltonien(gr1()));
+    // FIXME: EXPECT_TRUE(graphe_hamiltonien(gr5()));
+    EXPECT_FALSE(graphe_hamiltonien(gr6()));
+}
 
 TEST(props, distance) { ASSERT_EQ(distance(gr2(), 1, 2), 7); }
 
-TEST(props, excentricite) {}
+TEST(props, excentricite) {
+    pgraphe_t g5 = gr5();
 
-TEST(props, diametre) {}
+    EXPECT_EQ(excentricite(g5, 3), 3);
+    EXPECT_EQ(excentricite(g5, 1), 2);
+}
+
+TEST(props, diametre) {
+    EXPECT_EQ(diametre(gr6()), 3);
+    EXPECT_EQ(diametre(gr4()), 5);
+}

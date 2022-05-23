@@ -18,6 +18,9 @@ typedef struct s {
     bool selected;
     int somme_distance;
     struct s *predecesseur;
+
+    // Utilisé pour tout et n'importe quoi
+    int marqueur;
 } sommet_t, *psommet_t;
 
 /*
@@ -32,6 +35,9 @@ typedef struct a {
     int poids;             // poids de l arc
     psommet_t dest;        // pointeur sommet destinataire
     struct a *arc_suivant; // arc suivant
+
+    // Utilisé pour tout et n'importe quoi
+    int marqueur;
 
 } arc_t, *parc_t;
 
@@ -92,6 +98,20 @@ chemin_t chemin_new(pgraphe_t g, size_t len, const int *labels);
 ///
 /// L'indice est compris entre 0 et `chemin.len` (inclus), car il y a un sommet
 /// de plus que d'arcs.
-psommet_t chemin_sommet(chemin_t chemin, int index);
+psommet_t chemin_sommet(chemin_t chemin, size_t index);
 
 int simple(pgraphe_t g, chemin_t c);
+
+int elementaire(pgraphe_t g, chemin_t c);
+
+int eulerien(pgraphe_t g, chemin_t c);
+
+int hamiltonien(pgraphe_t g, chemin_t c);
+
+int graphe_eulerien(pgraphe_t g);
+
+int graphe_hamiltonien(pgraphe_t g);
+
+int excentricite(pgraphe_t g, int label);
+
+int diametre(pgraphe_t g);
