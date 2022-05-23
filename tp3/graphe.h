@@ -1,4 +1,6 @@
 
+#include <stdbool.h>
+
 typedef struct a *parc_t;
 
 /*
@@ -11,6 +13,10 @@ typedef struct s {
     parc_t liste_arcs;        // arcs sortants du sommet
     struct s *sommet_suivant; // sommet suivant dans le graphe
     int couleur;              // couleur du sommet
+    // Algo de Djikstra
+    bool selected;
+    int somme_distance;
+    struct s *predecesseur;
 } sommet_t, *psommet_t;
 
 /*
@@ -55,3 +61,5 @@ void afficher_graphe_profondeur(pgraphe_t g, int r);
 void afficher_graphe_largeur(pgraphe_t g, int r);
 
 void algo_dijkstra(pgraphe_t g, int r);
+
+int distance(pgraphe_t g, int x, int y);

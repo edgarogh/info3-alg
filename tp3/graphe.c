@@ -160,13 +160,57 @@ void afficher_graphe_profondeur(pgraphe_t g, int r) {
     return;
 }
 
-void algo_dijkstra(pgraphe_t g, int r) {
-    /*
-      algorithme de dijkstra
-      des variables ou des chanmps doivent etre ajoutees dans les structures.
-    */
+bool all_selected(pgraphe_t g) {
+    for (; g != NULL; g = g->sommet_suivant) {
+        if (!g->selected) {
+            return false;
+        }
+    }
+    return true;
+}
 
-    return;
+psommet_t trouver_plus_proche(pgraphe_t g) {
+    psommet_t som = g;
+    int dist_min = INT_MAX;
+    for (psommet_t i = g; i != NULL; i = i->sommet_suivant) {
+        if (som->selected) {
+            for (parc_t a = som->liste_arcs; a != NULL; a = a->arc_suivant) {
+                if (!a->dest->selected && a->dest->somme_distance < dist_min) {
+                    som = a->dest;
+                    dist_min = a->dest->somme_distance;
+                }
+            }
+        }
+    }
+    return som;
+}
+
+void algo_dijkstra(pgraphe_t g, int r) {
+    pgraphe_t selected = chercher_sommet(g, r);
+    selected->selected = true;
+    selected->somme_distance = 0;
+    for (pgraphe_t i = g; i != NULL; i = i->sommet_suivant) {
+        if (i != selected) {
+            i->selected = false;
+            i->somme_distance = INT_MAX;
+        }
+    }
+
+    while (!all_selected(g)) {
+        pgraphe_t plus_proche = trouver_plus_proche(g);
+        plus_proche->selected = true;
+        for (parc_t a = plus_proche->liste_arcs; a != NULL;
+             a = a->arc_suivant) {
+
+            if (!a->dest->selected &&
+                a->dest->somme_distance >
+                    plus_proche->somme_distance + a->poids) {
+                a->dest->somme_distance =
+                    plus_proche->somme_distance + a->poids;
+                a->dest->predecesseur = plus_proche;
+            }
+        }
+    }
 }
 
 // ======================================================================
@@ -190,19 +234,27 @@ int degre_entrant_sommet(pgraphe_t g, psommet_t s) {
 }
 
 int degre_maximal_graphe(pgraphe_t g) {
-    /*
-      Max des degres des sommets du graphe g
-    */
-
-    return 0;
+    pgraphe_t graphe = g;
+    int m = INT_MIN;
+    for (; g != NULL; g = g->sommet_suivant) {
+        int degre = degre_sortant_sommet(graphe, g);
+        if (degre > m) {
+            m = degre;
+        }
+    }
+    return m;
 }
 
 int degre_minimal_graphe(pgraphe_t g) {
-    /*
-      Min des degres des sommets du graphe g
-    */
-
-    return 0;
+    pgraphe_t graphe = g;
+    int m = INT_MAX;
+    for (; g != NULL; g = g->sommet_suivant) {
+        int degre = degre_sortant_sommet(graphe, g);
+        if (degre < m) {
+            m = degre;
+        }
+    }
+    return m;
 }
 
 int independant(pgraphe_t g) {
@@ -230,3 +282,9 @@ int regulier(pgraphe_t g) {
 /*
   placer les fonctions de l'examen 2017 juste apres
 */
+
+int distance(pgraphe_t g, int x, int y) {
+    algo_dijkstra(g, x);
+    psommet_t py = chercher_sommet(g, y);
+    return py->somme_distance;
+}
