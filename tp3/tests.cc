@@ -116,14 +116,29 @@ TEST(props, simple) {}
 
 TEST(props, eulerien) {}
 
-TEST(props, hamiltionien) {}
+TEST(props, hamiltonien) {}
 
-TEST(props, graphe_eulerien) {}
+TEST(props, graphe_eulerien) {
+    EXPECT_TRUE(graphe_eulerien(gr1()));
+    EXPECT_TRUE(graphe_eulerien(gr5()));
+}
 
-TEST(props, graphe_hamiltionien) {}
+TEST(props, graphe_hamiltonien) {
+    EXPECT_FALSE(graphe_hamiltonien(gr1()));
+    // FIXME: EXPECT_TRUE(graphe_hamiltonien(gr5()));
+    EXPECT_FALSE(graphe_hamiltonien(gr6()));
+}
 
 TEST(props, distance) {}
 
-TEST(props, excentricite) {}
+TEST(props, excentricite) {
+    pgraphe_t g5 = gr5();
 
-TEST(props, diametre) {}
+    EXPECT_EQ(excentricite(g5, 3), 3);
+    EXPECT_EQ(excentricite(g5, 1), 2);
+}
+
+TEST(props, diametre) {
+    EXPECT_EQ(diametre(gr6()), 3);
+    EXPECT_EQ(diametre(gr4()), 5);
+}

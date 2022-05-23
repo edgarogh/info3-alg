@@ -46,6 +46,7 @@ void ajouter_arc(psommet_t o, psommet_t d, int distance) {
     parc->poids = distance;
     parc->dest = d;
     parc->arc_suivant = o->liste_arcs;
+    parc->marqueur = 0;
     o->liste_arcs = parc;
     return;
 }
@@ -257,4 +258,116 @@ int elementaire(pgraphe_t g, chemin_t c) {
     }
 
     return true;
+}
+
+int eulerien(pgraphe_t g, chemin_t c) {
+    for (size_t i = 0; i < c.len; i++) {
+        c.arcs[i]->marqueur = 1;
+    }
+
+    for (psommet_t s = g; s; s = s->sommet_suivant) {
+        for (parc_t a = s->liste_arcs; a; a = a->arc_suivant) {
+            if (a->marqueur != 1)
+                return false;
+        }
+    }
+
+    return true;
+}
+
+int hamiltonien(pgraphe_t g, chemin_t c) {
+    for (size_t i = 0; i <= c.len; i++) {
+        chemin_sommet(c, i)->marqueur = 1;
+    }
+
+    for (psommet_t s = g; s; s = s->sommet_suivant) {
+        if (s->marqueur != 1)
+            return false;
+    }
+
+    return true;
+}
+
+int graphe_eulerien(pgraphe_t g) {
+    int nb_sommet_in = 0, nb_sommet_out = 0;
+
+    for (psommet_t s = g; s; s = s->sommet_suivant) {
+        int in = degre_entrant_sommet(g, s);
+        int out = degre_sortant_sommet(g, s);
+
+        if (in > out)
+            nb_sommet_in++;
+        if (out > in)
+            nb_sommet_out++;
+    }
+
+    return (nb_sommet_in <= 1) && (nb_sommet_out <= 1);
+}
+
+/// Parcourt les arcs qui ne sont pas marqués '3' et envoie `true` si `restant
+/// == 0`
+static bool parcourir_reste(parc_t a, size_t restants) {
+    if (restants == 0)
+        return true;
+
+    a->marqueur = 3;
+
+    for (parc_t a2 = a->dest->liste_arcs; a2; a2 = a2->arc_suivant) {
+        if (a2->marqueur != 3) {
+            if (parcourir_reste(a2, restants - 1)) {
+                a->marqueur = 0;
+                return true;
+            }
+        }
+    }
+
+    a->marqueur = 0;
+    return false;
+}
+
+int graphe_hamiltonien(pgraphe_t g) {
+    int restants = nombre_arcs(g);
+
+    for (psommet_t s = g; s; s = s->sommet_suivant) {
+        for (parc_t a = s->liste_arcs; a; a = a->arc_suivant) {
+            if (parcourir_reste(a, restants))
+                return true;
+        }
+    }
+
+    return false;
+}
+
+static int excentricite_s(pgraphe_t g, psommet_t s) {
+    int max = 0;
+    s->marqueur = 2;
+
+    for (parc_t a = s->liste_arcs; a; a = a->arc_suivant) {
+        psommet_t dest = a->dest;
+
+        if (dest->marqueur != 2) {
+            int e = excentricite_s(g, dest) + 1;
+            if (e > max)
+                max = e;
+        }
+    }
+
+    s->marqueur = 0;
+    return max;
+}
+
+int excentricite(pgraphe_t g, int label) {
+    return excentricite_s(g, chercher_sommet(g, label));
+}
+
+int diametre(pgraphe_t g) {
+    int max = 0;
+
+    for (psommet_t s = g; s; s = s->sommet_suivant) {
+        int e = excentricite_s(g, s);
+        if (e > max)
+            max = e;
+    }
+
+    return max;
 }
