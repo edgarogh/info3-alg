@@ -160,13 +160,57 @@ void afficher_graphe_profondeur(pgraphe_t g, int r) {
     return;
 }
 
-void algo_dijkstra(pgraphe_t g, int r) {
-    /*
-      algorithme de dijkstra
-      des variables ou des chanmps doivent etre ajoutees dans les structures.
-    */
+bool all_selected(pgraphe_t g) {
+    for (; g != NULL; g = g->sommet_suivant) {
+        if (!g->selected) {
+            return false;
+        }
+    }
+    return true;
+}
 
-    return;
+psommet_t trouver_plus_proche(pgraphe_t g) {
+    psommet_t som = g;
+    int dist_min = INT_MAX;
+    for (psommet_t i = g; i != NULL; i = i->sommet_suivant) {
+        if (som->selected) {
+            for (parc_t a = som->liste_arcs; a != NULL; a = a->arc_suivant) {
+                if (!a->dest->selected && a->dest->somme_distance < dist_min) {
+                    som = a->dest;
+                    dist_min = a->dest->somme_distance;
+                }
+            }
+        }
+    }
+    return som;
+}
+
+void algo_dijkstra(pgraphe_t g, int r) {
+    pgraphe_t selected = chercher_sommet(g, r);
+    selected->selected = true;
+    selected->somme_distance = 0;
+    for (pgraphe_t i = g; i != NULL; i = i->sommet_suivant) {
+        if (i != selected) {
+            i->selected = false;
+            i->somme_distance = INT_MAX;
+        }
+    }
+
+    while (!all_selected(g)) {
+        pgraphe_t plus_proche = trouver_plus_proche(g);
+        plus_proche->selected = true;
+        for (parc_t a = plus_proche->liste_arcs; a != NULL;
+             a = a->arc_suivant) {
+
+            if (!a->dest->selected &&
+                a->dest->somme_distance >
+                    plus_proche->somme_distance + a->poids) {
+                a->dest->somme_distance =
+                    plus_proche->somme_distance + a->poids;
+                a->dest->predecesseur = plus_proche;
+            }
+        }
+    }
 }
 
 // ======================================================================

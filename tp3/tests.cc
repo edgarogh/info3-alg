@@ -26,7 +26,15 @@ TEST(graph, afficher_graphe_largeur) {}
 
 TEST(graph, afficher_graphe_profondeur) {}
 
-TEST(graph, dijkstra) {}
+TEST(graph, dijkstra) {
+    pgraphe_t g = gr2();
+    algo_dijkstra(g, 1);
+    psommet_t depart = chercher_sommet(g, 1);
+    psommet_t arrive = chercher_sommet(g, 2);
+    psommet_t etape = chercher_sommet(g, 3);
+    ASSERT_EQ(arrive->predecesseur, etape);
+    ASSERT_EQ(etape->predecesseur, depart);
+}
 
 TEST(props, elementaire) {}
 
