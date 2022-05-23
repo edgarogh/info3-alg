@@ -1,5 +1,6 @@
 #include <gtest/gtest.h>
 extern "C" {
+#include "file.h"
 #include "graphe.h"
 }
 
@@ -26,9 +27,77 @@ load_graphe(gr_regulier_2);
 load_graphe(gr_sched1);
 load_graphe(gr_sched2);
 
-TEST(graph, afficher_graphe_largeur) {}
+TEST(graph, afficher_graphe_largeur) {
+    testing::internal::CaptureStdout();
+    afficher_graphe_largeur(gr0(), 0);
+    EXPECT_EQ(testing::internal::GetCapturedStdout(), "0; 5; 2; 8; \n");
 
-TEST(graph, afficher_graphe_profondeur) {}
+    testing::internal::CaptureStdout();
+    afficher_graphe_largeur(gr1(), 1);
+    EXPECT_EQ(testing::internal::GetCapturedStdout(), "1; 3; 2; \n");
+
+    testing::internal::CaptureStdout();
+    afficher_graphe_largeur(gr2(), 1);
+    EXPECT_EQ(testing::internal::GetCapturedStdout(), "1; 3; 2; \n");
+
+    testing::internal::CaptureStdout();
+    afficher_graphe_largeur(gr3(), 1);
+    EXPECT_EQ(testing::internal::GetCapturedStdout(),
+              "1; 5; 4; 3; 2; 7; 6; \n");
+
+    testing::internal::CaptureStdout();
+    afficher_graphe_largeur(gr3(), 8);
+    EXPECT_EQ(testing::internal::GetCapturedStdout(), "8; 9; \n");
+
+    testing::internal::CaptureStdout();
+    afficher_graphe_largeur(gr3(), 10);
+    EXPECT_EQ(testing::internal::GetCapturedStdout(), "10; 13; 12; 11; \n");
+
+    testing::internal::CaptureStdout();
+    afficher_graphe_largeur(gr4(), 1);
+    EXPECT_EQ(testing::internal::GetCapturedStdout(), "1; 6; 2; 5; 3; 4; \n");
+
+    testing::internal::CaptureStdout();
+    afficher_graphe_largeur(gr_couleurs(), 1);
+    EXPECT_EQ(testing::internal::GetCapturedStdout(),
+              "1; 7; 6; 5; 3; 2; 12; 11; 10; 9; \n");
+}
+
+TEST(graph, afficher_graphe_profondeur) {
+    testing::internal::CaptureStdout();
+    afficher_graphe_profondeur(gr0(), 0);
+    EXPECT_EQ(testing::internal::GetCapturedStdout(), "0; 5; 2; 8; \n");
+
+    testing::internal::CaptureStdout();
+    afficher_graphe_profondeur(gr1(), 1);
+    EXPECT_EQ(testing::internal::GetCapturedStdout(), "1; 3; 2; \n");
+
+    testing::internal::CaptureStdout();
+    afficher_graphe_profondeur(gr2(), 1);
+    EXPECT_EQ(testing::internal::GetCapturedStdout(), "1; 3; 2; \n");
+
+    testing::internal::CaptureStdout();
+    afficher_graphe_profondeur(gr3(), 1);
+    EXPECT_EQ(testing::internal::GetCapturedStdout(),
+              "1; 5; 4; 3; 2; 7; 6; \n");
+
+    testing::internal::CaptureStdout();
+    afficher_graphe_profondeur(gr3(), 8);
+    EXPECT_EQ(testing::internal::GetCapturedStdout(), "8; 9; \n");
+
+    testing::internal::CaptureStdout();
+    afficher_graphe_profondeur(gr3(), 10);
+    EXPECT_EQ(testing::internal::GetCapturedStdout(), "10; 13; 12; 11; \n");
+
+    testing::internal::CaptureStdout();
+    afficher_graphe_profondeur(gr4(), 1);
+    EXPECT_EQ(testing::internal::GetCapturedStdout(), "1; 6; 2; 5; 3; 4; \n");
+
+    testing::internal::CaptureStdout();
+    afficher_graphe_profondeur(gr_couleurs(), 1);
+    EXPECT_EQ(testing::internal::GetCapturedStdout(),
+              "1; 7; 3; 12; 9; 5; 11; 10; 2; 6; \n");
+}
 
 TEST(graph, dijkstra) {}
 

@@ -84,3 +84,5 @@ chemin_t chemin_new(pgraphe_t g, size_t len, const int *labels);
 /// L'indice est compris entre 0 et `chemin.len` (inclus), car il y a un sommet
 /// de plus que d'arcs.
 psommet_t chemin_sommet(chemin_t chemin, int index);
+
+int simple(pgraphe_t g, chemin_t c);

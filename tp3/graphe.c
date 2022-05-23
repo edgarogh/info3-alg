@@ -9,6 +9,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include "file.h"
 #include "graphe.h"
 
 psommet_t chercher_sommet(pgraphe_t g, int label) {
@@ -146,19 +147,53 @@ int colorier_graphe(pgraphe_t g) {
 }
 
 void afficher_graphe_largeur(pgraphe_t g, int r) {
-    /*
-      afficher les sommets du graphe avec un parcours en largeur
-    */
+    if (g == NULL)
+        return;
 
-    return;
+    init_couleur_sommet(g);
+    g = chercher_sommet(g, r);
+
+    pfile_t file = creer_file();
+    enfiler(file, g);
+
+    while (!file_vide(file)) {
+        g = (psommet_t)defiler(file);
+        g->couleur = 1;
+        printf("%d; ", g->label);
+
+        for (parc_t courant = g->liste_arcs; courant != NULL;
+             courant = courant->arc_suivant) {
+            if (courant->dest->couleur == 0) {
+                enfiler(file, courant->dest);
+                courant->dest->couleur = 1;
+            }
+        }
+    }
+    printf("\n");
+}
+
+void afficher_graphe_profondeur_sub(pgraphe_t g) {
+
+    if (g != NULL && g->couleur == 0) {
+        printf("%i; ", g->label);
+        g->couleur = 1;
+
+        for (parc_t courant = g->liste_arcs; courant != NULL;
+             courant = courant->arc_suivant) {
+            if (courant->dest->couleur == 0) {
+                afficher_graphe_profondeur_sub(courant->dest);
+            }
+        }
+    }
 }
 
 void afficher_graphe_profondeur(pgraphe_t g, int r) {
-    /*
-      afficher les sommets du graphe avec un parcours en profondeur
-    */
-
-    return;
+    if (g != NULL) {
+        g = chercher_sommet(g, r);
+        init_couleur_sommet(g);
+        afficher_graphe_profondeur_sub(g);
+        printf("\n");
+    }
 }
 
 void algo_dijkstra(pgraphe_t g, int r) {
