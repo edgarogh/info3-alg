@@ -243,6 +243,18 @@ int regulier(pgraphe_t g) {
     return true;
 }
 
-psommet_t chemin_sommet(chemin_t chemin, int index) {
+psommet_t chemin_sommet(chemin_t chemin, size_t index) {
     return (index == 0) ? chemin.start : chemin.arcs[index - 1]->dest;
+}
+
+int elementaire(pgraphe_t g, chemin_t c) {
+    for (size_t source_i = 0; source_i <= c.len; source_i++) {
+        for (size_t dest_i = source_i + 1; dest_i <= c.len; dest_i++) {
+            if (chemin_sommet(c, source_i)->label ==
+                chemin_sommet(c, dest_i)->label)
+                return false;
+        }
+    }
+
+    return true;
 }

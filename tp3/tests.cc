@@ -94,7 +94,23 @@ TEST(chemin, chemin_sommet) {
     EXPECT_EQ(chemin_sommet(gr1_13212, 4), chercher_sommet(g1, 2));
 }
 
-TEST(props, elementaire) {}
+TEST(props, elementaire) {
+    pgraphe_t g1 = gr1();
+    int gr1_1321_p[] = {1, 3, 2, 1};
+
+    chemin_t gr1_1321 = chemin_new(g1, 4, gr1_1321_p);
+    EXPECT_FALSE(elementaire(g1, gr1_1321));
+
+    chemin_t gr1_132 = chemin_new(g1, 3, gr1_1321_p);
+    EXPECT_TRUE(elementaire(g1, gr1_132));
+
+    chemin_t gr1_13 = chemin_new(g1, 2, gr1_1321_p);
+    EXPECT_TRUE(elementaire(g1, gr1_13));
+
+    int gr1_3213_p[] = {3, 2, 1, 3};
+    chemin_t gr1_3213 = chemin_new(g1, 4, gr1_3213_p);
+    EXPECT_FALSE(elementaire(g1, gr1_3213));
+}
 
 TEST(props, simple) {}
 
