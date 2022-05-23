@@ -282,3 +282,9 @@ int regulier(pgraphe_t g) {
 /*
   placer les fonctions de l'examen 2017 juste apres
 */
+
+int distance(pgraphe_t g, int x, int y) {
+    algo_dijkstra(g, x);
+    psommet_t py = chercher_sommet(g, y);
+    return py->somme_distance;
+}

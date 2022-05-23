@@ -48,7 +48,7 @@ TEST(props, graphe_eulerien) {}
 
 TEST(props, graphe_hamiltionien) {}
 
-TEST(props, distance) {}
+TEST(props, distance) { ASSERT_EQ(distance(gr2(), 1, 2), 7); }
 
 TEST(props, excentricite) {}
 
