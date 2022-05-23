@@ -1,5 +1,6 @@
 
 #include <stdbool.h>
+#include <stddef.h>
 
 typedef struct a *parc_t;
 
@@ -40,6 +41,12 @@ typedef struct a {
 
 typedef psommet_t pgraphe_t;
 
+typedef struct c {
+    size_t len;
+    psommet_t start;
+    parc_t *arcs;
+} chemin_t;
+
 psommet_t chercher_sommet(pgraphe_t g, int label);
 
 void ajouter_arc(psommet_t o, psommet_t d, int distance);
@@ -63,3 +70,28 @@ void afficher_graphe_largeur(pgraphe_t g, int r);
 void algo_dijkstra(pgraphe_t g, int r);
 
 int distance(pgraphe_t g, int x, int y);
+
+int degre_sortant_sommet(pgraphe_t g, psommet_t s);
+
+int degre_entrant_sommet(pgraphe_t g, psommet_t cible);
+
+/// Renvoie `true` si les arêtes du graphe n'ont pas de sommet en commun
+int independant(pgraphe_t g);
+
+/// Renvoie `true` si toutes les paires de sommet du graphe sont jointes par un
+/// arc
+int complet(pgraphe_t g);
+
+/// Graphe régulier: tous les sommets ont le meme degré
+/// g est le ponteur vers le premier sommet du graphe
+int regulier(pgraphe_t g);
+
+chemin_t chemin_new(pgraphe_t g, size_t len, const int *labels);
+
+/// Renvoie le sommet du chemin `chemin` à l'indice `index`.
+///
+/// L'indice est compris entre 0 et `chemin.len` (inclus), car il y a un sommet
+/// de plus que d'arcs.
+psommet_t chemin_sommet(chemin_t chemin, int index);
+
+int simple(pgraphe_t g, chemin_t c);

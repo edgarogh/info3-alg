@@ -1,3 +1,4 @@
+#include <assert.h>
 #include <limits.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -92,4 +93,34 @@ void ecrire_graphe_colorie(psommet_t g) {
         p = p->sommet_suivant;
     }
     return;
+}
+
+static parc_t trouver_arc(psommet_t source, int dest_label) {
+    for (parc_t a = source->liste_arcs; a; a = a->arc_suivant) {
+        if (a->dest->label == dest_label)
+            return a;
+    }
+
+    fprintf(stderr, "Arc introuvable (%d → %d)\n", source->label, dest_label);
+    exit(1);
+}
+
+chemin_t chemin_new(pgraphe_t g, size_t len, const int *labels) {
+    assert(len >= 2);
+
+    psommet_t prev_vertex = chercher_sommet(g, labels[0]);
+
+    chemin_t self = {
+        .len = len - 1,
+        .start = prev_vertex,
+        .arcs = malloc(sizeof(parc_t) * len),
+    };
+
+    for (size_t i = 1; i < len; i++) {
+        parc_t arc = trouver_arc(prev_vertex, labels[i]);
+        self.arcs[i - 1] = arc;
+        prev_vertex = arc->dest;
+    }
+
+    return self;
 }

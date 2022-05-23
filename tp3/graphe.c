@@ -5,9 +5,11 @@
 */
 
 #include <limits.h>
+#include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 
+#include "file.h"
 #include "graphe.h"
 
 psommet_t chercher_sommet(pgraphe_t g, int label) {
@@ -145,19 +147,53 @@ int colorier_graphe(pgraphe_t g) {
 }
 
 void afficher_graphe_largeur(pgraphe_t g, int r) {
-    /*
-      afficher les sommets du graphe avec un parcours en largeur
-    */
+    if (g == NULL)
+        return;
 
-    return;
+    init_couleur_sommet(g);
+    g = chercher_sommet(g, r);
+
+    pfile_t file = creer_file();
+    enfiler(file, g);
+
+    while (!file_vide(file)) {
+        g = (psommet_t)defiler(file);
+        g->couleur = 1;
+        printf("%d; ", g->label);
+
+        for (parc_t courant = g->liste_arcs; courant != NULL;
+             courant = courant->arc_suivant) {
+            if (courant->dest->couleur == 0) {
+                enfiler(file, courant->dest);
+                courant->dest->couleur = 1;
+            }
+        }
+    }
+    printf("\n");
+}
+
+void afficher_graphe_profondeur_sub(pgraphe_t g) {
+
+    if (g != NULL && g->couleur == 0) {
+        printf("%i; ", g->label);
+        g->couleur = 1;
+
+        for (parc_t courant = g->liste_arcs; courant != NULL;
+             courant = courant->arc_suivant) {
+            if (courant->dest->couleur == 0) {
+                afficher_graphe_profondeur_sub(courant->dest);
+            }
+        }
+    }
 }
 
 void afficher_graphe_profondeur(pgraphe_t g, int r) {
-    /*
-      afficher les sommets du graphe avec un parcours en profondeur
-    */
-
-    return;
+    if (g != NULL) {
+        g = chercher_sommet(g, r);
+        init_couleur_sommet(g);
+        afficher_graphe_profondeur_sub(g);
+        printf("\n");
+    }
 }
 
 bool all_selected(pgraphe_t g) {
@@ -216,21 +252,22 @@ void algo_dijkstra(pgraphe_t g, int r) {
 // ======================================================================
 
 int degre_sortant_sommet(pgraphe_t g, psommet_t s) {
-    /*
-      Cette fonction retourne le nombre d'arcs sortants
-      du sommet n dans le graphe g
-    */
-
-    return 0;
+    int degre = 0;
+    for (parc_t a = s->liste_arcs; a; a = a->arc_suivant) {
+        degre++;
+    }
+    return degre;
 }
 
-int degre_entrant_sommet(pgraphe_t g, psommet_t s) {
-    /*
-      Cette fonction retourne le nombre d'arcs entrants
-      dans le noeud n dans le graphe g
-    */
-
-    return 0;
+int degre_entrant_sommet(pgraphe_t g, psommet_t cible) {
+    int degre = 0;
+    for (psommet_t s = g; s; s = s->sommet_suivant) {
+        for (parc_t a = s->liste_arcs; a; a = a->arc_suivant) {
+            if (a->dest == cible)
+                degre++;
+        }
+    }
+    return degre;
 }
 
 int degre_maximal_graphe(pgraphe_t g) {
@@ -264,19 +301,33 @@ int independant(pgraphe_t g) {
 }
 
 int complet(pgraphe_t g) {
-    /* Toutes les paires de sommet du graphe sont jointes par un arc */
+    size_t sommets = 0, arcs = 0;
 
-    return 0;
+    for (psommet_t s = g; s; s = s->sommet_suivant) {
+        sommets++;
+
+        for (parc_t a = s->liste_arcs; a; a = a->arc_suivant) {
+            arcs++;
+        }
+    }
+
+    return (sommets * sommets) == arcs;
 }
 
 int regulier(pgraphe_t g) {
-    /*
-       graphe regulier: tous les sommets ont le meme degre
-       g est le ponteur vers le premier sommet du graphe
-       renvoie 1 si le graphe est régulier, 0 sinon
-    */
+    int expected;
+    if (g == NULL) {
+        return true;
+    } else {
+        expected = degre_sortant_sommet(g, g);
+    }
 
-    return 0;
+    for (psommet_t s = g->sommet_suivant; s; s = s->sommet_suivant) {
+        if (degre_sortant_sommet(g, s) != expected)
+            return false;
+    }
+
+    return true;
 }
 
 /*
@@ -287,4 +338,8 @@ int distance(pgraphe_t g, int x, int y) {
     algo_dijkstra(g, x);
     psommet_t py = chercher_sommet(g, y);
     return py->somme_distance;
+}
+
+psommet_t chemin_sommet(chemin_t chemin, int index) {
+    return (index == 0) ? chemin.start : chemin.arcs[index - 1]->dest;
 }
